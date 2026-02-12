@@ -1,7 +1,11 @@
-import { useEffect, useState } from "react";
+import { Read } from "@src/services/crud2";
+import { useContext, useEffect, useState } from "react";
+import Alerta from "../comum/alertas";
+import { AuthContext } from "@src/context/AuthContext";
 
 function Timer() {
   const [tempoRestante, setTempoRestante] = useState<string>("");
+  const { logout, auth } = useContext(AuthContext);
 
   useEffect(() => {
     const calcularTempo = () => {
@@ -30,7 +34,10 @@ function Timer() {
 
       if (novoTempo === "Sessão expirada") {
         clearInterval(interval);
-        window.location.href = "/"; // redireciona
+
+        Alerta("swal", "error", "Faça login novamente para continuar.");
+        // logout();
+        // window.location.href = "/";
       }
     }, 1000);
 
@@ -38,8 +45,10 @@ function Timer() {
   }, []);
 
   return (
-    <div className="p-2 h-10 text-sm bg-[var(--base-variant)] cursor-pointer
-      flex items-center justify-center rounded-full text-[var(--text-color)]">
+    <div
+      className="p-2 h-10 text-sm bg-[var(--base-variant)] cursor-pointer
+      flex items-center justify-center rounded-full text-[var(--text-color)]"
+    >
       {tempoRestante ? `Sessão : ${tempoRestante}` : "Sessão : 00:00"}
     </div>
   );

@@ -11,7 +11,12 @@ export default function DiasSemanaCards({ dias, selecionado, setSelecionado }: D
    
 
         return (
-    <div className="flex gap-3 overflow-x-hidden py-3 px-1 w-full">
+    <div className="flex gap-3 overflow-x-scroll py-3 px-1 w-full"
+      style={{
+      scrollbarWidth: "none",
+      msOverflowStyle: "none",
+    }}
+  >
       {dias.map((d, i) => {
         const isSelecionado = d.data.isSame(selecionado.data, 'day');
         const isHoje = d.data.isSame(dayjs(), 'day');

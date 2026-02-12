@@ -13,8 +13,8 @@ function App() {
   return (
     <BrowserRouter>
       <ToastContainer />
-        <AppProviders>
-            <Rotas />
+      <AppProviders>
+        <Rotas />
       </AppProviders>
     </BrowserRouter>
   );

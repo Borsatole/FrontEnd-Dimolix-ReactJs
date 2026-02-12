@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "./button";
 import { MaxCaracteres } from "@src/services/funcoes-globais";
 
-
 interface CardOpcoesProps {
   titulo: string;
   descricao?: string;
@@ -12,12 +11,15 @@ interface CardOpcoesProps {
   rota: string;
 }
 
-export function CardOpcoes({ titulo, descricao, icone, rota }: CardOpcoesProps) {
+export function CardOpcoes({
+  titulo,
+  descricao,
+  icone,
+  rota,
+}: CardOpcoesProps) {
   const navigate = useNavigate();
   return (
-    <Card
-      className="w-full max-w-sm bg-[var(--base-variant)] mx-auto shadow-lg rounded-2xl border border-[var(--base-color)] hover:shadow-2xl transition-shadow duration-300 cursor-pointer"
-    >
+    <Card className="w-full max-w-sm bg-[var(--base-variant)] mx-auto shadow-lg rounded-2xl border border-[var(--base-color)] hover:shadow-2xl transition-shadow duration-300 cursor-pointer">
       <div className="flex flex-col h-full min-h-[300px]">
         {/* Conteúdo que cresce */}
         <div className="flex-grow">
@@ -29,9 +31,7 @@ export function CardOpcoes({ titulo, descricao, icone, rota }: CardOpcoesProps) 
           </div>
 
           {/* Título */}
-          <h5 className="mb-2 text-xl font-semibold text-center">
-            {titulo}
-          </h5>
+          <h5 className="mb-2 text-xl font-semibold text-center">{titulo}</h5>
 
           {/* Descrição */}
           {descricao && (
@@ -43,10 +43,7 @@ export function CardOpcoes({ titulo, descricao, icone, rota }: CardOpcoesProps) 
 
         {/* Botão sempre na base com largura total */}
         <div className="w-full mt-4">
-          <Button
-            onClick={() => navigate(rota)}
-            className="w-full"
-          >
+          <Button onClick={() => navigate(rota)} className="w-full">
             Acessar
           </Button>
         </div>

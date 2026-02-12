@@ -86,7 +86,6 @@ function rotaPermitida(menu: any[], path: string): boolean {
   return false;
 }
 
-
 const Rotas = () => {
   const { auth } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -101,7 +100,6 @@ const Rotas = () => {
       navigate("/renove", { replace: true });
     }
   }, [auth?.menu, location.pathname, navigate]);
-
 
   // Separa rotas protegidas e não protegidas
   const rotasProtegidas = routes.filter((route) => route.protected);
@@ -124,7 +122,6 @@ const Rotas = () => {
           }
         >
           {rotasProtegidas.map(({ path, element }, index) => {
-            
             const isPermitida = rotaPermitida(auth?.menu || [], path);
             return (
               <Route

@@ -6,12 +6,18 @@ import { Input, TextArea } from "@components/comum/input";
 import { FormGroup } from "@components/comum/FormGroup";
 import { Button } from "@components/comum/button";
 import { SelectModificado } from "@src/components/comum/select";
-import { Cliente, DadosLocacao, Endereco, GrupoEstoque, ItemEstoque } from "@src/components/tipos";
+import {
+  Cliente,
+  DadosLocacao,
+  Endereco,
+  GrupoEstoque,
+  ItemEstoque,
+} from "@src/components/tipos";
 import { LuUserRoundSearch } from "react-icons/lu";
 import ProcurarClientes from "./ProcuraClientes";
 import BotaoSeletor from "../comum/buttonSelected";
 import { Update } from "@src/services/crud2";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 import { useEstoque } from "@src/context/EstoqueContext";
 import Alerta from "../comum/alertas";
 
@@ -38,7 +44,7 @@ function ModalEditarRegistro() {
     selectedRegistro,
     setSelectedRegistro,
     abrirModalEditarRegistro,
-    setAbrirModalEditarRegistro
+    setAbrirModalEditarRegistro,
   } = useEstoque();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -55,10 +61,14 @@ function ModalEditarRegistro() {
   const [forma_pagamento, setForma_pagamento] = useState<string>("");
   const [observacoes, setObservacoes] = useState<string>("");
 
-  const [enderecos, setEnderecos] = useState<Endereco[]>([]);
-  const [enderecoSelecionado, setEnderecoSelecionado] = useState<Endereco | null>(null);
+  const [date, setDate] = useState<Date | null>(null);
 
-  const [abrirModalProcuraClientes, setabrirModalProcuraClientes] = useState(false);
+  const [enderecos, setEnderecos] = useState<Endereco[]>([]);
+  const [enderecoSelecionado, setEnderecoSelecionado] =
+    useState<Endereco | null>(null);
+
+  const [abrirModalProcuraClientes, setabrirModalProcuraClientes] =
+    useState(false);
 
   const formasPagamento = [
     { id: 1, label: "dinheiro" },
@@ -68,30 +78,45 @@ function ModalEditarRegistro() {
     { id: 5, label: "outro" },
   ];
 
-
   useEffect(() => {
-    console.log(selectedRegistro);
     if (!selectedRegistro) return;
     setLocacaoAtual(selectedRegistro);
   }, [selectedRegistro]);
 
-
   // Preenche todos os estados quando abre o modal
-useEffect(() => {
-  if (!abrirModalEditarRegistro || !selectedRegistro) return;
+  useEffect(() => {
+    if (!abrirModalEditarRegistro || !selectedRegistro) return;
 
-  const dados = selectedRegistro.dados_locacao;
+    const dados = selectedRegistro.dados_locacao;
 
-  if (!dados) return;
+    if (!dados) return;
 
-  // Cliente
-  const clienteObj: Cliente = {
-    id: Number(dados.cliente_id),
-    nome: dados.cliente_nome || "",
-    telefone: dados.cliente_telefone || "",
-    email: "",
-    celular: "",
-    enderecos: [{
+    // Cliente
+    const clienteObj: Cliente = {
+      id: Number(dados.cliente_id),
+      nome: dados.cliente_nome || "",
+      telefone: dados.cliente_telefone || "",
+      email: "",
+      celular: "",
+      enderecos: [
+        {
+          id: Number(dados.endereco_id),
+          logradouro: dados.logradouro,
+          numero: dados.numero,
+          bairro: dados.bairro,
+          cidade: dados.cidade,
+          estado: dados.estado,
+          cep: dados.cep,
+          complemento: dados.complemento || "",
+        },
+      ],
+    };
+
+    setDadosCliente(clienteObj);
+    setCliente_id(Number(dados.cliente_id));
+
+    // Endereços
+    const enderecoObj: Endereco = {
       id: Number(dados.endereco_id),
       logradouro: dados.logradouro,
       numero: dados.numero,
@@ -99,50 +124,29 @@ useEffect(() => {
       cidade: dados.cidade,
       estado: dados.estado,
       cep: dados.cep,
-      complemento: dados.complemento || ""
-    }]
-  };
+      complemento: dados.complemento || "",
+    };
 
-  setDadosCliente(clienteObj);
-  setCliente_id(Number(dados.cliente_id));
+    setEnderecos([enderecoObj]);
+    setEnderecoSelecionado(enderecoObj);
+    setEndereco_id(Number(dados.endereco_id));
 
-  // Endereços
-  const enderecoObj: Endereco = {
-    id: Number(dados.endereco_id),
-    logradouro: dados.logradouro,
-    numero: dados.numero,
-    bairro: dados.bairro,
-    cidade: dados.cidade,
-    estado: dados.estado,
-    cep: dados.cep,
-    complemento: dados.complemento || ""
-  };
-
-  setEnderecos([enderecoObj]);
-  setEnderecoSelecionado(enderecoObj);
-  setEndereco_id(Number(dados.endereco_id));
-
-  // Outras informações da locação
-  setLocacao_item_id(Number(dados.locacao_item_id));
-  setData_inicio(dayjs(dados.data_inicio).format("YYYY-MM-DD"));
-  setData_fim(dayjs(dados.data_fim).format("YYYY-MM-DD"));
-  setPreco_total(Number(dados.preco_total));
-  setForma_pagamento(dados.forma_pagamento || "");
-  setObservacoes(dados.observacoes || "");
-  
-}, [abrirModalEditarRegistro, selectedRegistro]);
-
-
+    // Outras informações da locação
+    setLocacao_item_id(Number(dados.locacao_item_id));
+    setData_inicio(dayjs(dados.data_inicio).format("YYYY-MM-DD"));
+    setData_fim(dayjs(dados.data_fim).format("YYYY-MM-DD"));
+    setPreco_total(Number(dados.preco_total));
+    setForma_pagamento(dados.forma_pagamento || "");
+    setObservacoes(dados.observacoes || "");
+  }, [abrirModalEditarRegistro, selectedRegistro]);
 
   useEffect(() => {
     if (!dadosCliente) return;
-    
+
     setDadosCliente(dadosCliente);
     setCliente_id(Number(dadosCliente?.id));
     setEnderecos(dadosCliente?.enderecos || []);
   }, [dadosCliente]);
-
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -178,17 +182,15 @@ useEffect(() => {
     }
 
     const payload = {
-    //   cliente_id,
-    //   locacao_item_id,
-    //   endereco_id,
+      //   cliente_id,
+      //   locacao_item_id,
+      //   endereco_id,
       data_inicio,
       data_fim,
       preco_total,
       forma_pagamento,
-      observacoes: observacoes.trim()
+      observacoes: observacoes.trim(),
     };
-
-    
 
     try {
       Update<any>({
@@ -213,8 +215,6 @@ useEffect(() => {
     setAbrirModalEditarRegistro(false);
   };
 
-  console.log(locacaoAtual);
-
   if (!abrirModalEditarRegistro) return null;
   if (!selectedRegistro) return null;
   if (!dadosCliente) return null;
@@ -228,7 +228,9 @@ useEffect(() => {
               <div className="flex items-start justify-between">
                 <div className="flex-1 space-y-2">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-800">{dadosCliente.nome}</h3>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      {dadosCliente.nome}
+                    </h3>
                     {dadosCliente.razao_social && (
                       <p className="text-sm">{dadosCliente.razao_social}</p>
                     )}
@@ -237,34 +239,42 @@ useEffect(() => {
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     {dadosCliente.telefone && (
                       <div>
-                        <span className="text-gray-500 font-medium">Telefone:</span>
+                        <span className="text-gray-500 font-medium">
+                          Telefone:
+                        </span>
                         <p className="text-gray-700">{dadosCliente.telefone}</p>
                       </div>
                     )}
                     {dadosCliente.celular && (
                       <div>
-                        <span className="text-gray-500 font-medium">Celular:</span>
+                        <span className="text-gray-500 font-medium">
+                          Celular:
+                        </span>
                         <p className="text-gray-700">{dadosCliente.celular}</p>
                       </div>
                     )}
                     {dadosCliente.email && (
                       <div className="col-span-2">
-                        <span className="text-gray-500 font-medium">Email:</span>
+                        <span className="text-gray-500 font-medium">
+                          Email:
+                        </span>
                         <p className="text-gray-700">{dadosCliente.email}</p>
                       </div>
                     )}
                     {dadosCliente.enderecos && (
                       <div className="col-span-2">
-                        <span className="text-gray-500 font-medium">Endereço:</span>
+                        <span className="text-gray-500 font-medium">
+                          Endereço:
+                        </span>
                         <p className="text-gray-700">
-                          {dadosCliente.enderecos.map((endereco) => endereco.logradouro).join(", ")}
+                          {dadosCliente.enderecos
+                            .map((endereco) => endereco.logradouro)
+                            .join(", ")}
                         </p>
                       </div>
                     )}
                   </div>
                 </div>
-
-            
               </div>
             </div>
           ) : (
@@ -284,7 +294,6 @@ useEffect(() => {
 
         {dadosCliente && (
           <>
-    
             <div className="grid grid-cols-2 gap-4">
               <FormGroup id="data_inicio" label="Data Início">
                 <Input
@@ -325,19 +334,28 @@ useEffect(() => {
                 >
                   <option value="">Selecione</option>
                   {formasPagamento.map((formaPagamento) => (
-                    <option key={formaPagamento.id} value={formaPagamento.label}>
+                    <option
+                      key={formaPagamento.id}
+                      value={formaPagamento.label}
+                    >
                       {formaPagamento.label}
                     </option>
                   ))}
                 </SelectModificado>
               </FormGroup>
 
-              <FormGroup label="Observação" id="observacao" className="col-span-2">
+              <FormGroup
+                label="Observação"
+                id="observacao"
+                className="col-span-2"
+              >
                 <TextArea
                   id="observacao"
                   name="observacao"
                   value={observacoes}
-                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setObservacoes(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                    setObservacoes(e.target.value)
+                  }
                 />
               </FormGroup>
             </div>
@@ -353,7 +371,7 @@ useEffect(() => {
           >
             Cancelar
           </Button>
-          
+
           <Button type="submit" loading={isLoading} disabled={isLoading}>
             <p className="flex items-center gap-2">
               {getIcon("salvar", 20)}
@@ -362,8 +380,6 @@ useEffect(() => {
           </Button>
         </div>
       </form>
-
-      
     </Modal>
   );
 }

@@ -1,5 +1,13 @@
 import React, { ReactNode } from "react";
-import { ThemeProvider, Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow } from "flowbite-react";
+import {
+  ThemeProvider,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeadCell,
+  TableRow,
+} from "flowbite-react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { IoMdSad } from "react-icons/io";
 
@@ -34,7 +42,13 @@ interface TabelaDinamicaProps<T = any> {
 }
 
 // Componente Tooltip interno
-function Tooltip({ children, tooltip }: { children: ReactNode; tooltip: string }) {
+function Tooltip({
+  children,
+  tooltip,
+}: {
+  children: ReactNode;
+  tooltip: string;
+}) {
   return (
     <div className="relative group">
       {children}
@@ -57,7 +71,6 @@ function TabelaDinamica<T = any>({
   mensagemVazia = "Nenhum cadastro encontrado",
   mostrarAcoes = true,
 }: TabelaDinamicaProps<T>) {
-
   const modernTheme = {
     table: {
       root: {
@@ -84,7 +97,10 @@ function TabelaDinamica<T = any>({
     },
   };
 
-  const totalColunas = colunas.length + (iconeItem ? 1 : 0) + (mostrarAcoes && acoes.length > 0 ? 1 : 0);
+  const totalColunas =
+    colunas.length +
+    (iconeItem ? 1 : 0) +
+    (mostrarAcoes && acoes.length > 0 ? 1 : 0);
 
   return (
     <div className="w-full bg-[var(--base-variant)] rounded-2xl shadow-lg border border-[var(--base-color)] overflow-hidden">
@@ -94,34 +110,33 @@ function TabelaDinamica<T = any>({
             <TableHead>
               <TableRow>
                 {iconeItem && (
-                  <TableHeadCell className="text-center">
-                    Ícone
-                  </TableHeadCell>
+                  <TableHeadCell className="text-center">Ícone</TableHeadCell>
                 )}
-                
+
                 {colunas.map((coluna) => (
-                  <TableHeadCell 
+                  <TableHeadCell
                     key={coluna.key}
                     className={coluna.headerClassName}
                   >
                     {coluna.label}
                   </TableHeadCell>
                 ))}
-                
+
                 {mostrarAcoes && acoes.length > 0 && (
-                  <TableHeadCell className="text-center">
-                    Ações
-                  </TableHeadCell>
+                  <TableHeadCell className="text-center">Ações</TableHeadCell>
                 )}
               </TableRow>
             </TableHead>
-            
+
             <TableBody>
               {dados.length === 0 && (
                 <TableRow className="hover:bg-transparent">
-                  <TableCell colSpan={totalColunas} className="text-center py-12">
+                  <TableCell
+                    colSpan={totalColunas}
+                    className="text-center py-12"
+                  >
                     <div className="flex flex-col items-center justify-center text-gray-500 dark:text-gray-400">
-                      <IoMdSad  className="w-16 h-16 mb-4 opacity-50"/>
+                      <IoMdSad className="w-16 h-16 mb-4 opacity-50" />
 
                       {/* <svg className="w-16 h-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
@@ -158,10 +173,9 @@ function TabelaDinamica<T = any>({
                         key={coluna.key}
                         className={`font-medium ${coluna.className || ""}`}
                       >
-                        {coluna.render 
+                        {coluna.render
                           ? coluna.render(item, index)
-                          : String((item as any)[coluna.key] || "")
-                        }
+                          : String((item as any)[coluna.key] || "")}
                       </TableCell>
                     ))}
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { Badge, HR } from "flowbite-react";
 
 // REQUISICOES E CRUD
 import { requisicaoGet } from "@services/requisicoes";
@@ -18,170 +18,250 @@ import { Button } from "@components/comum/button";
 import { getIcon } from "@src/components/icons";
 
 // TABELA
-import { MostrarNumeroDeResultados, Rodape } from "@src/components/comum/tabelas";
-import TabelaDinamica, { ColunaConfig, AcaoConfig } from "@src/components/comum/TabelaDinamica";
+import {
+  MostrarNumeroDeResultados,
+  Rodape,
+} from "@src/components/comum/tabelas";
+import TabelaDinamica, {
+  ColunaConfig,
+  AcaoConfig,
+} from "@src/components/comum/TabelaDinamica";
 
 // MODAIS E FILTROS
 // import EditarRegistro from "./DetalhesRegistro";
 import ModalAdicionarRegistro from "./NovoRegistro";
-import { FiltroCadastros } from "./FiltroRegistro";
 import CardCacambaEstoque from "./CardCacambaEstoque";
 import DetalhesRegistro from "./DetalhesRegistro";
 import RetiradaRegistro from "./RetiradaRegistro";
 import { usePaginacao } from "@src/hooks/UsePaginacao";
 import { useEstoque } from "@src/context/EstoqueContext";
 import EditarRegistro from "./EditarRegistro";
-
+import OpcaoVisualizacao from "./OpcaoVisualizacao";
+import { CaixaExpansora } from "@src/components/comum/CaixaExpansora";
+import ModalAgendamentos from "./ModalAgendamentos";
+import { Read } from "@src/services/crud2";
 
 function Tabela() {
+  {
+    /* Controla Loading do skeleton */
+  }
+  const [loading, setLoading] = useState(true);
 
-  {/* Controla Loading do skeleton */}
-    const [loading, setLoading] = useState(true);
+  type FiltroStatus = "todos" | "locado" | "disponivel";
 
-  {/* Contexto que controla a tabela.tsx */}
-    const {
-      registros, setRegistros,
-      relistar, setRelistar,
-      loadingSpiner, setLoadingSpiner,
-      selectedRegistro, setSelectedRegistro,
-      abrirModalNovoRegistro, setAbrirModalNovoRegistro,
-      abrirModalEditarRegistro, setAbrirModalEditarRegistro,
-      abrirModalDetalhesRegistro, setAbrirModalDetalhesRegistro
-    } = useEstoque();
+  const [filtroStatus, setFiltroStatus] = useState<FiltroStatus>("locado");
 
-  {/* Hook que controla a paginacao */}
-    const {
-      pagina, setPagina,
-      queryFiltro, setQueryFiltro,
-      limitePorPagina, setLimitePorPagina,
-      totalPaginas, setTotalPaginas,
-      totalResultados, setTotalResultados
-    } = usePaginacao();
+  {
+    /* Contexto que controla a tabela.tsx */
+  }
+  const {
+    registros,
+    setRegistros,
+    relistar,
+    setRelistar,
+    loadingSpiner,
+    setLoadingSpiner,
+    selectedRegistro,
+    setSelectedRegistro,
+    abrirModalNovoRegistro,
+    setAbrirModalNovoRegistro,
+    abrirModalEditarRegistro,
+    setAbrirModalEditarRegistro,
+    abrirModalDetalhesRegistro,
+    setAbrirModalDetalhesRegistro,
+    abrirModalAgendamentos,
+    setAbrirModalAgendamentos,
+  } = useEstoque();
 
-  {/* Controla Modais Locais */}
-  const [abrirModalRegistrarRetirada, setAbrirModalRegistrarRetirada] = useState(false);
-  const [abrirModalRegistrarLocacao, setAbrirModalRegistrarLocacao] = useState(false);
+  {
+    /* Hook que controla a paginacao */
+  }
+  const {
+    pagina,
+    setPagina,
+    queryFiltro,
+    setQueryFiltro,
+    limitePorPagina,
+    setLimitePorPagina,
+    totalPaginas,
+    setTotalPaginas,
+    totalResultados,
+    setTotalResultados,
+  } = usePaginacao();
 
-  {/* Fecha Todos Modais Ao Selecionar Registro */}
-  useEffect(() => {
-    console.log(selectedRegistro);
-      if (selectedRegistro === null) {
-        setAbrirModalDetalhesRegistro(false);
-        setAbrirModalEditarRegistro(false);
-        setAbrirModalRegistrarRetirada(false);
-        setAbrirModalRegistrarLocacao(false);
+  const resumoPorCategoria = registros.reduce(
+    (acc, grupo) => {
+      const total = grupo.itens.length;
+      const locados = grupo.itens.filter(
+        (item: any) => item.status === "locado",
+      ).length;
 
+      acc[grupo.categoria] = { total, locados };
+      return acc;
+    },
+    {} as Record<string, { total: number; locados: number }>,
+  );
+
+  const totais = registros.reduce(
+    (acc, grupo) => {
+      grupo.itens.forEach((item: any) => {
+        acc.total++;
+
+        if (item.status === "locado") acc.locados++;
+        if (item.status === "disponivel") acc.disponiveis++;
+      });
+
+      return acc;
+    },
+    { total: 0, locados: 0, disponiveis: 0 },
+  );
+
+  const registrosFiltrados = registros
+    .map((grupo) => {
+      let itensFiltrados = grupo.itens;
+
+      if (filtroStatus !== "todos") {
+        itensFiltrados = grupo.itens.filter(
+          (item: any) => item.status === filtroStatus,
+        );
       }
-    }, [selectedRegistro]);
 
-  {/* Busca Dados da Api */}
+      return {
+        ...grupo,
+        itens: itensFiltrados,
+      };
+    })
+    .filter((grupo) => grupo.itens.length > 0);
+
+  {
+    /* Controla Modais Locais */
+  }
+  const [abrirModalRegistrarRetirada, setAbrirModalRegistrarRetirada] =
+    useState(false);
+  const [abrirModalRegistrarLocacao, setAbrirModalRegistrarLocacao] =
+    useState(false);
+
+  {
+    /* Fecha Todos Modais Ao Selecionar Registro */
+  }
   useEffect(() => {
-      buscarDados({endpoint: `/estoque`,
-        queryFiltro, pagina, limitePorPagina, setRegistros, setTotalResultados, setTotalPaginas, setLoadingSpiner, setRelistar, setLoading});
-  }, [pagina, limitePorPagina, queryFiltro, relistar]);
+    if (selectedRegistro === null) {
+      setAbrirModalDetalhesRegistro(false);
+      setAbrirModalEditarRegistro(false);
+      setAbrirModalRegistrarRetirada(false);
+      setAbrirModalRegistrarLocacao(false);
+    }
+  }, [selectedRegistro]);
 
+  {
+    /* Busca Dados da Api */
+  }
+  useEffect(() => {
+    Read({
+      endpoint: `/estoque`,
+      queryFiltro,
+      pagina,
+      limitePorPagina,
+      setRegistros,
+      setTotalResultados,
+      setTotalPaginas,
+      setLoadingSpiner,
+      setRelistar,
+      setLoading,
+    });
+  }, [pagina, limitePorPagina, queryFiltro]);
 
-  if (loading) return <LoadingSkeleton />;
+  useEffect(() => {
+    if (!relistar) return;
+
+    Read({
+      endpoint: `/estoque`,
+      queryFiltro,
+      pagina,
+      limitePorPagina,
+      setRegistros,
+      setTotalResultados,
+      setTotalPaginas,
+      setLoadingSpiner,
+      setRelistar,
+      setLoading,
+    });
+  }, [relistar]);
+
   return (
     <>
+      <OpcaoVisualizacao
+        setFiltroStatus={setFiltroStatus}
+        filtroStatus={filtroStatus}
+        totais={totais}
+      />
+
+      <Agendamentos setAbrirModalAgendamentos={setAbrirModalAgendamentos} />
 
       {/* Listagem Dados */}
       <LoadingSpiner loading={loadingSpiner}>
-        
+        {registrosFiltrados.map((registro, i) => {
+          const resumo = resumoPorCategoria[registro.categoria];
 
-        {registros.map((registro, i) => (
-        <div
-          key={i}
-          className="grid mt-3 sm:grid-cols-2 md:grid-cols-3 gap-3 md:mx-auto"
-        >
-          <h1 className="font-bold text-xl col-span-full">
-          {registro.categoria}
-          </h1>
-
-          {registro.itens.map((item, i) => (
-            
-            <div key={i}>
-              <CardCacambaEstoque
-                key={i}
-                item={item}
-                setSelectedRegistro={setSelectedRegistro}
-                setAbrirModalNovoRegistro={setAbrirModalNovoRegistro}
-                setAbrirModalDetalhesRegistro={setAbrirModalDetalhesRegistro}
-                setAbrirModalRegistrarLocacao={setAbrirModalRegistrarLocacao}
-                setAbrirModalRegistrarRetirada={setAbrirModalRegistrarRetirada}
-              />
-              
-            </div>
-          ))}
-        </div>
-        ))}
-
+          return (
+            <CaixaExpansora
+              key={registro.categoria}
+              titulo={`${registro.categoria}`}
+              subtitulo={`
+                ${resumo.locados}/${resumo.total} locados • ${
+                  resumo.total - resumo.locados
+                } disponíveis`}
+            >
+              <div className="grid mt-3 sm:grid-cols-2 md:grid-cols-3 gap-2 md:mx-auto">
+                {registro.itens.map((item: any, i: number) => (
+                  <CardCacambaEstoque
+                    key={i}
+                    item={item}
+                    setSelectedRegistro={setSelectedRegistro}
+                    setAbrirModalNovoRegistro={setAbrirModalNovoRegistro}
+                    setAbrirModalDetalhesRegistro={
+                      setAbrirModalDetalhesRegistro
+                    }
+                    setAbrirModalRegistrarLocacao={
+                      setAbrirModalRegistrarLocacao
+                    }
+                    setAbrirModalRegistrarRetirada={
+                      setAbrirModalRegistrarRetirada
+                    }
+                  />
+                ))}
+              </div>
+            </CaixaExpansora>
+          );
+        })}
       </LoadingSpiner>
 
       {/* Modais */}
-      {abrirModalDetalhesRegistro && selectedRegistro && <DetalhesRegistro/>}
-      {abrirModalRegistrarRetirada && selectedRegistro && <RetiradaRegistro/>}
-      
-      {abrirModalEditarRegistro && selectedRegistro && <EditarRegistro/>}
-      {abrirModalNovoRegistro && <ModalAdicionarRegistro/>}
+      {abrirModalDetalhesRegistro && selectedRegistro && <DetalhesRegistro />}
+      {abrirModalRegistrarRetirada && selectedRegistro && <RetiradaRegistro />}
+      {abrirModalAgendamentos && <ModalAgendamentos />}
+
+      {abrirModalEditarRegistro && selectedRegistro && <EditarRegistro />}
+      {abrirModalNovoRegistro && <ModalAdicionarRegistro />}
     </>
   );
 }
 
 export default Tabela;
 
+type AgendamentosProps = {
+  setAbrirModalAgendamentos: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-function BotaoNovoRegistro({ onClick }: { onClick: () => void }) {
+function Agendamentos({ setAbrirModalAgendamentos }: AgendamentosProps) {
   return (
-    <div className="flex justify-between">
-        <Button onClick={onClick} className="mb-3">
-          <p className="flex items-center gap-2">
-            {getIcon("estoque", 20)}
-            <span>Criar Estoque</span>
-          </p>
-        </Button>
-      </div>
+    <div
+      className="bg-[var(--base-variant)] rounded-2xl shadow-lg border border-[var(--base-color)] overflow-hidden mb-6 transition-all duration-300 p-3 flex items-center justify-center"
+      onClick={() => setAbrirModalAgendamentos(true)}
+    >
+      <p className="flex items-center gap-2 cursor-pointer">
+        <span className="font-semibold ">Agendamentos</span>
+      </p>
+    </div>
   );
-}
-
-function buscarDados({
-    endpoint = "",
-    queryFiltro = "",
-    pagina = 1,
-    limitePorPagina = 7,
-    setRegistros,
-    setTotalResultados,
-    setTotalPaginas,
-    setLoadingSpiner,
-    setRelistar,
-    setLoading,
-    
-  }: {
-    endpoint: string;
-    queryFiltro: string;
-    pagina: number;
-    limitePorPagina: number;
-    setRegistros: React.Dispatch<React.SetStateAction<GrupoEstoque[]>>;
-    setTotalResultados: React.Dispatch<React.SetStateAction<number>>;
-    setTotalPaginas: React.Dispatch<React.SetStateAction<number>>;
-    setLoadingSpiner: React.Dispatch<React.SetStateAction<boolean>>;
-    setRelistar: React.Dispatch<React.SetStateAction<boolean>>;
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  }) {
-    setLoadingSpiner(true);
-   requisicaoGet(`${endpoint}?${queryFiltro}&pagina=${pagina}&limite=${limitePorPagina}`)
-      .then((response) => {
-        if (response?.data.success) {
-          // console.log(response.data);
-
-          setRegistros(response.data.registros);
-          if (response.data.paginacao) {
-          setTotalResultados(response.data.paginacao.total);
-          setTotalPaginas(response.data.paginacao.ultimaPagina);
-          }
-        }
-        setLoadingSpiner(false);
-        setRelistar(false);
-        setLoading(false);
-      });
 }

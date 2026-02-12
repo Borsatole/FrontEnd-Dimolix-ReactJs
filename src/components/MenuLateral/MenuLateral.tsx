@@ -1,10 +1,10 @@
 import { useContext, useMemo } from "react";
 import { AuthContext } from "@src/context/AuthContext";
 import { useMenu } from "@src/context/MenuContext";
-
-
-
-import { OpcaoMenu, OpcaoMenuComSubmenu } from "@components/MenuLateral/OpcaoMenu";
+import {
+  OpcaoMenu,
+  OpcaoMenuComSubmenu,
+} from "@components/MenuLateral/OpcaoMenu";
 import { BtnFecharMenuLateral } from "@components/MenuLateral/botoesMenu";
 
 import "./MenuLateral.css";
@@ -12,12 +12,9 @@ import "./MenuLateral.css";
 import { MenuItem, SubMenuItem } from "@src/components/tipos";
 import PremiumRenewButton from "./PremiumRenewButton";
 
-
-
 const MenuLateral = () => {
   const { logout, auth } = useContext(AuthContext);
   const { menuAberto, fecharMenu } = useMenu();
-
 
   return (
     <aside
@@ -29,8 +26,10 @@ const MenuLateral = () => {
 
       {/* Logo */}
       <div className="flex items-center justify-center mb-6 cursor-pointer">
-        <div className="w-full flex justify-center max-w-[100%] p-3 
-        bg-[var(--fundo-logo)] rounded-lg backdrop-blur-sm">
+        <div
+          className="w-full flex justify-center max-w-[100%] p-3 
+        bg-[var(--fundo-logo)] rounded-lg backdrop-blur-sm"
+        >
           <img
             src={`/logo.webp`}
             className="w-[60%] h-auto object-contain max-w-[30%]"
@@ -51,25 +50,37 @@ const MenuLateral = () => {
             // Submenu
             if (menu.submenu) {
               return (
-                <OpcaoMenuComSubmenu key={index} nome={menu.nome} svg={menu.icone} >
+                <OpcaoMenuComSubmenu
+                  key={index}
+                  nome={menu.nome}
+                  svg={menu.icone}
+                >
                   {menu.submenu.map((sub: SubMenuItem, i: number) => (
-                    <OpcaoMenu key={i} nome={sub.nome} rota={sub.rota} svg={sub.icone}/>
+                    <OpcaoMenu
+                      key={i}
+                      nome={sub.nome}
+                      rota={sub.rota}
+                      svg={sub.icone}
+                    />
                   ))}
                 </OpcaoMenuComSubmenu>
               );
             }
 
             // Menu normal
-            return <OpcaoMenu key={index} nome={menu.nome} rota={menu.rota} svg={menu.icone} />;
+            return (
+              <OpcaoMenu
+                key={index}
+                nome={menu.nome}
+                rota={menu.rota}
+                svg={menu.icone}
+              />
+            );
           })}
         </nav>
 
         {/* Minha Assinatura */}
         <PremiumRenewButton />
-        
-
-
-
       </div>
     </aside>
   );

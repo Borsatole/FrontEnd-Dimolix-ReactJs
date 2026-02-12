@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-
 // REQUISICOES E CRUD
 import { requisicaoGet } from "@services/requisicoes";
 
@@ -18,8 +17,14 @@ import { Button } from "@components/comum/button";
 import { getIcon } from "@src/components/icons";
 
 // TABELA
-import { MostrarNumeroDeResultados, Rodape } from "@src/components/comum/tabelas";
-import TabelaDinamica, { ColunaConfig, AcaoConfig } from "@src/components/comum/TabelaDinamica";
+import {
+  MostrarNumeroDeResultados,
+  Rodape,
+} from "@src/components/comum/tabelas";
+import TabelaDinamica, {
+  ColunaConfig,
+  AcaoConfig,
+} from "@src/components/comum/TabelaDinamica";
 
 // MODAIS E FILTROS
 import ModalEditarRegistro from "@src/components/clientes/EditarRegistro";
@@ -31,39 +36,48 @@ import { useClientes } from "@src/context/ClientesContext";
 import { usePaginacao } from "@src/hooks/UsePaginacao";
 import { useFetch } from "@src/hooks/useFetch";
 
-
-
 function Tabela() {
   const [loading, setLoading] = useState(true);
 
   // Contexto que controla a tabela.tsx
   const {
-    registros, setRegistros,
-    relistar, setRelistar,
-    loadingSpiner, setLoadingSpiner,
-    selectedCliente, setSelectedCliente,
-    abrirModalNovoRegistro, setAbrirModalNovoRegistro,
-    abrirModalEditarRegistro, setAbrirModalEditarRegistro
+    registros,
+    setRegistros,
+    relistar,
+    setRelistar,
+    loadingSpiner,
+    setLoadingSpiner,
+    selectedCliente,
+    setSelectedCliente,
+    abrirModalNovoRegistro,
+    setAbrirModalNovoRegistro,
+    abrirModalEditarRegistro,
+    setAbrirModalEditarRegistro,
   } = useClientes();
 
   // Hook que controla a paginacao
   const {
-    pagina, setPagina,
-    queryFiltro, setQueryFiltro,
-    limitePorPagina, setLimitePorPagina,
-    totalPaginas, setTotalPaginas,
-    totalResultados, setTotalResultados
+    pagina,
+    setPagina,
+    queryFiltro,
+    setQueryFiltro,
+    limitePorPagina,
+    setLimitePorPagina,
+    totalPaginas,
+    setTotalPaginas,
+    totalResultados,
+    setTotalResultados,
   } = usePaginacao();
-
-  
-
 
   // Configuração das colunas da tabela
   const colunas: ColunaConfig<Cliente>[] = [
     {
       key: "nome",
       label: "NOME",
-      render: (registro) => LetraMaiuscula(MaxCaracteres(registro.nome || registro.razao_social, 30)),
+      render: (registro) =>
+        LetraMaiuscula(
+          MaxCaracteres(registro.nome || registro.razao_social, 30),
+        ),
     },
     {
       key: "celular",
@@ -108,19 +122,21 @@ function Tabela() {
       icon: <div className="cursor-pointer">{getIcon("deletar", 20)}</div>,
       tooltip: "Excluir",
       onClick: (registro) => {
-        Delete({registro,registros, setRegistros, endpoint: `/clientes/${registro.id}`,
-                antesDeExecutar : () => {
-                  setLoadingSpiner(true);
-                },
-                depoisDeExecutar : () => {
-                  setLoadingSpiner(false);
-                  // setRelistar(true);
-                },
+        Delete({
+          registro,
+          registros,
+          setRegistros,
+          endpoint: `/clientes/${registro.id}`,
+          antesDeExecutar: () => {
+            setLoadingSpiner(true);
+          },
+          depoisDeExecutar: () => {
+            setLoadingSpiner(false);
+            // setRelistar(true);
+          },
         });
         setSelectedCliente(null);
-      }
-        
-        
+      },
     },
   ];
 
@@ -131,24 +147,30 @@ function Tabela() {
     </div>
   );
 
-
-
-    useEffect(() => {
-    buscarDados({endpoint: `/clientes`,
-      queryFiltro, pagina, limitePorPagina, setRegistros, setTotalResultados, setTotalPaginas, setLoadingSpiner, setRelistar, setLoading});
-    }, [pagina, limitePorPagina, queryFiltro, relistar]);
-
-  
+  useEffect(() => {
+    buscarDados({
+      endpoint: `/clientes`,
+      queryFiltro,
+      pagina,
+      limitePorPagina,
+      setRegistros,
+      setTotalResultados,
+      setTotalPaginas,
+      setLoadingSpiner,
+      setRelistar,
+      setLoading,
+    });
+  }, [pagina, limitePorPagina, queryFiltro, relistar]);
 
   if (loading) return <LoadingSkeleton />;
 
   return (
     <>
       <BotaoNovoRegistro onClick={() => setAbrirModalNovoRegistro(true)} />
-      <FiltroCadastros onFiltrar={setQueryFiltro}/>
+      <FiltroCadastros onFiltrar={setQueryFiltro} />
 
       <div className="flex justify-between items-center m-3">
-      <MostrarNumeroDeResultados totalResultados={totalResultados} />
+        <MostrarNumeroDeResultados totalResultados={totalResultados} />
       </div>
 
       {/* Tabela dinâmica */}
@@ -167,17 +189,15 @@ function Tabela() {
       {/* Rodapé da tabela */}
       {totalResultados > limitePorPagina && (
         <Rodape
-        pagina={pagina}
-        limitePorPagina={limitePorPagina}
-        registros={registros}
-        totalResultados={totalResultados}
-        totalPaginas={totalPaginas}
-        setPagina={setPagina}
-        setLimitePorPagina={setLimitePorPagina}
-      />
-
+          pagina={pagina}
+          limitePorPagina={limitePorPagina}
+          registros={registros}
+          totalResultados={totalResultados}
+          totalPaginas={totalPaginas}
+          setPagina={setPagina}
+          setLimitePorPagina={setLimitePorPagina}
+        />
       )}
-      
 
       {/* Modais */}
       {abrirModalEditarRegistro && selectedCliente && <ModalEditarRegistro />}
@@ -188,58 +208,54 @@ function Tabela() {
 
 export default Tabela;
 
-
 function BotaoNovoRegistro({ onClick }: { onClick: () => void }) {
   return (
     <div className="flex justify-between">
-        <Button onClick={onClick} className="mb-3">
-          <p className="flex items-center gap-2">
-            {getIcon("clientes", 20)}
-            <span>Criar Cliente</span>
-          </p>
-        </Button>
-      </div>
+      <Button onClick={onClick} className="mb-3">
+        <p className="flex items-center gap-2">
+          {getIcon("clientes", 20)}
+          <span>Criar Cliente</span>
+        </p>
+      </Button>
+    </div>
   );
-
-
-  
 }
 
 function buscarDados({
-    endpoint = "",
-    queryFiltro = "",
-    pagina = 1,
-    limitePorPagina = 7,
-    setRegistros,
-    setTotalResultados,
-    setTotalPaginas,
-    setLoadingSpiner,
-    setRelistar,
-    setLoading,
-    
-  }: {
-    endpoint: string;
-    queryFiltro: string;
-    pagina: number;
-    limitePorPagina: number;
-    setRegistros: React.Dispatch<React.SetStateAction<Cliente[]>>;
-    setTotalResultados: React.Dispatch<React.SetStateAction<number>>;
-    setTotalPaginas: React.Dispatch<React.SetStateAction<number>>;
-    setLoadingSpiner: React.Dispatch<React.SetStateAction<boolean>>;
-    setRelistar: React.Dispatch<React.SetStateAction<boolean>>;
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  }) {
-    setLoadingSpiner(true);
-   requisicaoGet(`${endpoint}?${queryFiltro}&pagina=${pagina}&limite=${limitePorPagina}`)
-      .then((response) => {
-        if (response?.data.success) {
-          // console.log(response.data);
-          setRegistros(response.data.registros);
-          setTotalResultados(response.data.paginacao.total);
-          setTotalPaginas(response.data.paginacao.ultimaPagina);
-        }
-        setLoadingSpiner(false);
-        setRelistar(false);
-        setLoading(false);
-      });
+  endpoint = "",
+  queryFiltro = "",
+  pagina = 1,
+  limitePorPagina = 7,
+  setRegistros,
+  setTotalResultados,
+  setTotalPaginas,
+  setLoadingSpiner,
+  setRelistar,
+  setLoading,
+}: {
+  endpoint: string;
+  queryFiltro: string;
+  pagina: number;
+  limitePorPagina: number;
+  setRegistros: React.Dispatch<React.SetStateAction<Cliente[]>>;
+  setTotalResultados: React.Dispatch<React.SetStateAction<number>>;
+  setTotalPaginas: React.Dispatch<React.SetStateAction<number>>;
+  setLoadingSpiner: React.Dispatch<React.SetStateAction<boolean>>;
+  setRelistar: React.Dispatch<React.SetStateAction<boolean>>;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+  setLoadingSpiner(true);
+  requisicaoGet(
+    `${endpoint}?${queryFiltro}&pagina=${pagina}&limite=${limitePorPagina}`,
+  ).then((response) => {
+    if (response?.data.success) {
+      // console.log(response.data);
+      setRegistros(response.data.registros);
+      setTotalResultados(response.data.paginacao.total);
+      setTotalPaginas(response.data.paginacao.ultimaPagina);
+    }
+    setLoadingSpiner(false);
+    setRelistar(false);
+    setLoading(false);
+  });
 }

@@ -24,13 +24,13 @@ function Modal({ IsOpen, onClose, children, ...rest }: any) {
     >
       <div
         {...rest}
-        className={`relative p-12  rounded w-[95%] lg:w-[55%] min-h-[60vh] max-h-[90vh] overflow-y-auto ${rest.className}`}
+        className={`relative p-5  rounded w-[95%] lg:w-[55%] min-h-[60vh] max-h-[90vh] overflow-y-auto ${rest.className}`}
         style={{ backgroundColor: "var(--base-variant)" }}
         onClick={(e) => e.stopPropagation()} // Impede fechar clicando dentro
       >
         {/* Botão Close */}
         <button
-          className="absolute top-4 right-4 text-[--var-text-color] hover:text-[--var-text-color] cursor-pointer"
+          className="absolute top-4 mb-5 right-4 text-[--var-text-color] hover:text-[--var-text-color] cursor-pointer"
           onClick={onClose}
         >
           <svg
@@ -52,7 +52,7 @@ function Modal({ IsOpen, onClose, children, ...rest }: any) {
         {children}
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }
 

@@ -7,12 +7,8 @@ import React, {
 } from "react";
 import { useNavigate } from "react-router-dom";
 import Alerta from "@components/comum/alertas";
-import {
-  requisicaoGet,
-  requisicaoPost,
-  requisicaoPostSemRedirect,
-} from "@services/requisicoes";
-import { useMenu } from "../context/MenuContext";
+import { requisicaoGet, requisicaoPost } from "@services/requisicoes";
+import { useMenu } from "@src/context/MenuContext";
 import { MenuItem, UserData } from "@src/components/tipos";
 
 interface AuthData {
@@ -33,13 +29,15 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
+export const AuthContext = createContext<AuthContextType>(
+  {} as AuthContextType,
+);
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const { fecharMenu } = useMenu();
   const navigate = useNavigate();
 
-  const [auth, setAuth] = useState<AuthData>({
+  const [auth, setAuth] = useState<any>({
     token: localStorage.getItem("token"),
     expirationTime: localStorage.getItem("expirationTime")
       ? Number(localStorage.getItem("expirationTime"))
@@ -53,36 +51,38 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       : null,
   });
 
-  const verificaToken = useCallback(
-    async (token: string) => {
-      try {
-        await requisicaoPostSemRedirect(`/login/validar`, { token });
-      } catch (error: any) {
-        if (error.response) {
-          const msg = error.response.data?.message || "Erro desconhecido";
-          Alerta("swal", "error", msg);
+  // const [auth, setAuth] = useState<any>({});
 
-          if (error.response.status === 401) {
-            logout();
-            Alerta("swal", "error", "Faça login novamente para continuar.");
-          }
-        } else if (error.request) {
-          Alerta("swal", "error", "Sem resposta do servidor");
-        } else {
-          Alerta("swal", "error", `Erro: ${error.message}`);
-        }
+  // const verificaToken = useCallback(
+  //   async (token: string) => {
+  //     try {
+  //       await requisicaoPostSemRedirect(`/login/validar`, { token });
+  //     } catch (error: any) {
+  //       if (error.response) {
+  //         const msg = error.response.data?.message || "Erro desconhecido";
+  //         Alerta("swal", "error", msg);
 
-        logout();
-      }
-    },
-    [auth.user]
-  );
+  //         if (error.response.status === 401) {
+  //           logout();
+  //           Alerta("swal", "error", "Faça login novamente para continuar.");
+  //         }
+  //       } else if (error.request) {
+  //         Alerta("swal", "error", "Sem resposta do servidor");
+  //       } else {
+  //         Alerta("swal", "error", `Erro: ${error.message}`);
+  //       }
 
-  useEffect(() => {
-    if (auth.token) {
-      verificaToken(auth.token);
-    }
-  }, [auth.token, verificaToken]);
+  //       logout();
+  //     }
+  //   },
+  //   [auth.user],
+  // );
+
+  // useEffect(() => {
+  //   if (auth.token) {
+  //     verificaToken(auth.token);
+  //   }
+  // }, [auth.token, verificaToken]);
 
   const login = (data: any) => {
     const token = data.token;
@@ -105,7 +105,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.clear();
+    // localStorage.clear();
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("expirationTime");
+
     setAuth({
       token: null,
       expirationTime: null,

@@ -18,9 +18,7 @@ export function AppProviders({ children }: AppProvidersProps) {
         <MenuProvider>
           <ClientesProvider>
             <EstoqueProvider>
-              <DemandasProvider>
-                  {children}
-              </DemandasProvider>
+              <DemandasProvider>{children}</DemandasProvider>
             </EstoqueProvider>
           </ClientesProvider>
         </MenuProvider>

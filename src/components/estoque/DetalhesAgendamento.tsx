@@ -1,28 +1,25 @@
 import dayjs from "dayjs";
 import Modal from "@components/modal/Modal";
 import { Button } from "@components/comum/button";
-import { useEstoque } from "@src/context/EstoqueContext";
 
-function DetalhesRegistro() {
-  const { selectedRegistro, setSelectedRegistro } = useEstoque();
-
+function DetalhesAgendamento({
+  selectedRegistro,
+  setSelectedRegistro,
+  setAbrirModalDetalhesAgendamentos,
+}: any) {
   if (!selectedRegistro) return null;
 
-  const fecharModal = () => setSelectedRegistro(null);
+  const fecharModal = () => setAbrirModalDetalhesAgendamentos(false);
 
-  const loc = selectedRegistro.dados_locacao ?? null;
+  const loc = selectedRegistro ?? null;
   const dataInicio = loc ? dayjs(loc.data_inicio).format("DD/MM/YYYY") : "-";
   const dataFim = loc ? dayjs(loc.data_fim).format("DD/MM/YYYY") : "-";
 
   const retiradaHoje = loc && dayjs(loc.data_fim).isSame(dayjs(), "day");
   const atrasado = loc && dayjs().isAfter(dayjs(loc.data_fim), "day");
 
-  const badgeStatusItem =
-    selectedRegistro.status === "disponivel"
-      ? "bg-green-600"
-      : selectedRegistro.status === "locado"
-        ? "bg-orange-600"
-        : "bg-gray-600";
+  const endereco = loc ? loc.endereco : null;
+  const cliente = loc ? loc.cliente : null;
 
   return (
     <Modal IsOpen={true} onClose={fecharModal} className="min-h-auto">
@@ -40,15 +37,14 @@ function DetalhesRegistro() {
 
           <div className="grid grid-cols-2 gap-4">
             <Info label="Código" value={selectedRegistro.id} />
-            <Info label="Item" value={selectedRegistro.item} />
-            <Info label="Categoria" value={selectedRegistro.categoria} />
+            <Info label="Item" value={selectedRegistro.categoria_item} />
 
             <div className="flex flex-col">
               <span className="text-xs">Status</span>
               <span
-                className={`${badgeStatusItem} text-sm px-2 py-1 rounded font-semibold w-fit`}
+                className={`bg-green-600 text-white text-sm px-2 py-1 rounded font-semibold w-fit`}
               >
-                {selectedRegistro.status}
+                Agendado
               </span>
             </div>
           </div>
@@ -62,28 +58,9 @@ function DetalhesRegistro() {
             <h3 className="text-lg font-semibold mb-3">Dados da Locação</h3>
 
             <div className="grid grid-cols-2 gap-4">
-              <Info label="Cliente" value={loc.cliente_nome} />
+              <Info label="Cliente" value={cliente.nome} />
               <Info label="Início" value={dataInicio} />
-
-              <div className="flex flex-col">
-                <span className="text-xs">Data de Retirada</span>
-
-                <span
-                  className={`text-sm font-bold px-2 py-1 rounded w-fit ${
-                    retiradaHoje
-                      ? "bg-green-600 text-white"
-                      : atrasado
-                        ? "bg-red-600 text-white"
-                        : ""
-                  }`}
-                >
-                  {retiradaHoje
-                    ? "Retirada hoje!"
-                    : atrasado
-                      ? `Atrasado - ${dataFim}`
-                      : dataFim}
-                </span>
-              </div>
+              <Info label="Fim" value={dataFim} />
 
               <Info label="Preço total" value={`R$ ${loc.preco_total}`} />
               <Info label="Forma de pagamento" value={loc.forma_pagamento} />
@@ -108,12 +85,15 @@ function DetalhesRegistro() {
             <h3 className="text-lg font-semibold mb-3">Endereço</h3>
 
             <div className="grid grid-cols-2 gap-4">
-              <Info label="CEP" value={loc.cep} />
-              <Info label="Cidade" value={`${loc.cidade} - ${loc.estado}`} />
-              <Info label="Bairro" value={loc.bairro} />
-              <Info label="Número" value={loc.numero} />
-              <Info label="Logradouro" value={loc.logradouro} />
-              <Info label="Complemento" value={loc.complemento ?? "-"} />
+              <Info label="CEP" value={endereco.cep} />
+              <Info
+                label="Cidade"
+                value={`${endereco.cidade} - ${endereco.estado}`}
+              />
+              <Info label="Bairro" value={endereco.bairro} />
+              <Info label="Número" value={endereco.numero} />
+              <Info label="Logradouro" value={endereco.logradouro} />
+              <Info label="Complemento" value={endereco.complemento ?? "-"} />
             </div>
           </div>
         )}
@@ -129,7 +109,7 @@ function DetalhesRegistro() {
   );
 }
 
-export default DetalhesRegistro;
+export default DetalhesAgendamento;
 
 /* --------------------------------------------- */
 /* 🔧 COMPONENTE DE INFO (PADRÃO BONITO)        */
