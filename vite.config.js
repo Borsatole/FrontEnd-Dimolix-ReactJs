@@ -18,6 +18,9 @@ export default defineConfig({
       "@context": path.resolve(__dirname, "src/context"),
       "@routes": path.resolve(__dirname, "src/routes"),
       "@services": path.resolve(__dirname, "src/services"),
+
+      "@mui/styled-engine": "@mui/styled-engine",
     },
+    dedupe: ["@emotion/react", "@emotion/styled"],
   },
 });

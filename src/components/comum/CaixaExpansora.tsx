@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaFilter, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { AiOutlineFolder } from "react-icons/ai";
 import { getIcon } from "../icons";
@@ -21,6 +21,10 @@ export function CaixaExpansora({
   defaultExpandido = true,
 }: FiltroContainerProps) {
   const [expandido, setExpandido] = useState(defaultExpandido);
+
+  useEffect(() => {
+    setExpandido(defaultExpandido);
+  }, [defaultExpandido]);
 
   return (
     <div className="bg-[var(--base-variant)] rounded-2xl shadow-lg border border-[var(--base-color)] overflow-hidden mb-6 transition-all duration-300 p-3">

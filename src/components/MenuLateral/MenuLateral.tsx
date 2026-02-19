@@ -35,11 +35,6 @@ const MenuLateral = () => {
             className="w-[60%] h-auto object-contain max-w-[30%]"
             alt="Logo"
           />
-          {/* <img
-            src={`/logo.webp`}
-            className="w-[60%] h-auto object-contain max-w-[30%] filter invert brightness-0"
-            alt="Logo"
-          /> */}
         </div>
       </div>
 

@@ -6,6 +6,7 @@ import { MenuProvider } from "./MenuContext";
 import { ClientesProvider } from "./ClientesContext";
 import { EstoqueProvider } from "./EstoqueContext";
 import { DemandasProvider } from "./DemandasContext";
+import { FinanceiroProvider } from "./FinanceiroContext";
 
 interface AppProvidersProps {
   children: ReactNode;
@@ -17,9 +18,11 @@ export function AppProviders({ children }: AppProvidersProps) {
       <AuthProvider>
         <MenuProvider>
           <ClientesProvider>
-            <EstoqueProvider>
-              <DemandasProvider>{children}</DemandasProvider>
-            </EstoqueProvider>
+            <FinanceiroProvider>
+              <EstoqueProvider>
+                <DemandasProvider>{children}</DemandasProvider>
+              </EstoqueProvider>
+            </FinanceiroProvider>
           </ClientesProvider>
         </MenuProvider>
       </AuthProvider>

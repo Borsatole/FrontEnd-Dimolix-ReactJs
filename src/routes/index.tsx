@@ -29,6 +29,8 @@ const Estoque = lazy(() => import("./estoque/estoque"));
 const Demandas = lazy(() => import("./demandas/demandas"));
 const Renove = lazy(() => import("./renove/renove"));
 const Clientes = lazy(() => import("./clientes/clientes"));
+const Financeiro = lazy(() => import("./financeiro/financeiro"));
+const FinanceiroCategorias = lazy(() => import("./financeiro/Categorias"));
 
 const routes = [
   { path: "/", element: <Home />, protected: true },
@@ -38,7 +40,12 @@ const routes = [
   { path: "/demandas", element: <Demandas />, protected: true },
   { path: "/renove", element: <Renove />, protected: true },
   { path: "/clientes", element: <Clientes />, protected: true },
-  { path: "/peixes", element: <NivelAcesso />, protected: true },
+  { path: "/financeiro", element: <Financeiro />, protected: true },
+  {
+    path: "/financeiro/categorias",
+    element: <FinanceiroCategorias />,
+    protected: true,
+  },
 ];
 
 function AcessoNegado() {

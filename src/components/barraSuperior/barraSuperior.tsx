@@ -1,52 +1,39 @@
-import { BtnAbrirMenuLateral } from '@components/MenuLateral/botoesMenu'
-import Tooltip from '@components/tooltip/tooltipwrapper'
-import DarkmodeButton from './darkmodeButton'
-import AvatarOptions from './avatarOptions'
-import Timer from './timer'
-import { RiFullscreenExitFill } from "react-icons/ri";
-import FullScreenButton from './fullscreen'
-import AvatarButton from './avatarButton'
-
-
+import { BtnAbrirMenuLateral } from "@components/MenuLateral/botoesMenu";
+import Tooltip from "@components/tooltip/tooltipwrapper";
+import DarkmodeButton from "./darkmodeButton";
+import AvatarOptions from "./avatarOptions";
+import Timer from "./timer";
+import FullScreenButton from "./fullscreen";
+import AtualizarButton from "./Atualizar";
 
 function BarraSuperior() {
-
   return (
     <nav className="w-full p-4 flex bg-[var(--base-color)]  justify-between items-center b-1 border-b-1 border-[var(--base-variant)] ">
-      
-          <div>
-          <BtnAbrirMenuLateral />
-          </div>
+      <div>
+        <BtnAbrirMenuLateral />
+      </div>
 
+      <div className="flex items-center gap-3 justify-center ">
+        <Timer />
 
-        <div className="flex items-center gap-3 justify-center ">
+        <Tooltip tooltip="Alternar tela cheia" position="bottom">
+          <FullScreenButton />
+        </Tooltip>
 
-          
-          <Timer />
+        <Tooltip tooltip="Alternar tema" position="bottom">
+          <DarkmodeButton />
+        </Tooltip>
 
+        <Tooltip tooltip="Atualizar" position="bottom">
+          <AtualizarButton />
+        </Tooltip>
 
-          
-          <Tooltip tooltip="Alternar tela cheia" position="bottom">
-            <FullScreenButton />
-          </Tooltip>
-
-
-          <Tooltip tooltip="Alternar tema" position="bottom">
-            <DarkmodeButton />
-          </Tooltip>
-
-          <Tooltip tooltip="Usuario" position="bottom">
-            <AvatarOptions />
-          </Tooltip>
-
-          
-      
-
-        </div>
-
-        
+        <Tooltip tooltip="Usuario" position="bottom">
+          <AvatarOptions />
+        </Tooltip>
+      </div>
     </nav>
-  )
+  );
 }
 
-export default BarraSuperior
+export default BarraSuperior;

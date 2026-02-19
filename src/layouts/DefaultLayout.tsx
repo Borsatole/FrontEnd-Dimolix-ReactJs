@@ -3,6 +3,7 @@ import MenuLateral from "@components/MenuLateral/MenuLateral";
 import Container from "@components/comum/container";
 import { Outlet, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { SoftRender } from "@src/components/comum/SoftRender";
 
 export default function DefaultLayout() {
   const [animar, setAnimar] = useState(true);
@@ -20,6 +21,7 @@ export default function DefaultLayout() {
   return (
     <>
       <BarraSuperior />
+
       <Container tipo="principal">
         <MenuLateral />
         <div

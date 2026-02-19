@@ -11,7 +11,11 @@
     "postinstall": "flowbite-react patch"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@material-tailwind/react": "^2.1.10",
+    "@mui/material": "^7.3.8",
+    "@mui/x-charts": "^8.27.0",
     "@tailwindcss/vite": "^4.0.1",
     "axios": "^1.7.9",
     "dayjs": "^1.11.18",

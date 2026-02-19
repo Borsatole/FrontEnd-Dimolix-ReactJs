@@ -19,18 +19,18 @@ function Modal({ IsOpen, onClose, children, ...rest }: any) {
   return ReactDOM.createPortal(
     <div
       {...rest}
-      className="fixed inset-0  z-[30] bg-[var(--fundo-modal)]/90 flex items-center justify-center "
+      className="fixed inset-0 z-[30] bg-[var(--fundo-modal)]/90 flex items-center justify-center animate-fadeIn"
       onClick={onClose} // Clique fora fecha o modal
     >
       <div
         {...rest}
-        className={`relative p-5  rounded w-[95%] lg:w-[55%] min-h-[60vh] max-h-[90vh] overflow-y-auto ${rest.className}`}
+        className={`relative p-3 rounded w-[95%] lg:w-[55%] min-h-[60vh] max-h-[90vh] overflow-y-auto pt-10 animate-slideUp ${rest.className}`}
         style={{ backgroundColor: "var(--base-variant)" }}
         onClick={(e) => e.stopPropagation()} // Impede fechar clicando dentro
       >
         {/* Botão Close */}
         <button
-          className="absolute top-4 mb-5 right-4 text-[--var-text-color] hover:text-[--var-text-color] cursor-pointer"
+          className="absolute top-4 right-4 text-[--var-text-color] hover:text-[--var-text-color] cursor-pointer"
           onClick={onClose}
         >
           <svg
@@ -51,6 +51,36 @@ function Modal({ IsOpen, onClose, children, ...rest }: any) {
 
         {children}
       </div>
+
+      <style>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out;
+        }
+
+        .animate-slideUp {
+          animation: slideUp 0.3s ease-out;
+        }
+      `}</style>
     </div>,
     document.body,
   );

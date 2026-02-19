@@ -155,7 +155,8 @@ interface Delete<T extends BaseRegistro> {
   setRegistros?: React.Dispatch<React.SetStateAction<T[]>>;
   antesDeExecutar?: () => void,
   depoisDeExecutar?: () => void,
-  endpoint: string; // ex: "/Estoque/categoria/deletar-categoria.php"
+  endpoint: string;
+  nomeRegistro?: string
 }
 
 export function Delete<T extends BaseRegistro>({
@@ -165,6 +166,7 @@ export function Delete<T extends BaseRegistro>({
   antesDeExecutar,
   depoisDeExecutar,
   endpoint,
+  nomeRegistro = "esse registro",
 }: Delete<T>) {
 
   const executarDelete = async () => {
@@ -190,7 +192,7 @@ export function Delete<T extends BaseRegistro>({
   };
 
   Confirm({
-    text: `Tem certeza que deseja deletar ${registro?.nome ?? "este registro"}?`,
+    text: `Tem certeza que deseja deletar ${nomeRegistro}?`,
     onConfirm: executarDelete,
     onCancel: () => {},
   });

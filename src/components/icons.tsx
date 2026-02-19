@@ -23,6 +23,9 @@ import { FaUserClock } from "react-icons/fa";
 import { BiDetail } from "react-icons/bi";
 import { FiSend } from "react-icons/fi";
 
+import { TbCategoryPlus } from "react-icons/tb";
+import { CiCalendarDate } from "react-icons/ci";
+
 export const icons: Record<string, JSX.Element> = {
   dashboard: <MdDashboard />,
   demandas: <BsCalendarDateFill />,
@@ -31,7 +34,11 @@ export const icons: Record<string, JSX.Element> = {
   clientes: <FaUserFriends />,
   estoque: <FaTruckFront />,
   agendamentos: <FaUserClock />,
+
+  // financeiro
   financeiro: <FaMoneyBillTransfer />,
+  categorias: <TbCategoryPlus />,
+  contasfixas: <CiCalendarDate />,
 
   filter: <FaFilter />,
 
