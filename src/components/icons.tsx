@@ -4,7 +4,11 @@ import { FaMoneyBillTransfer } from "react-icons/fa6";
 
 import { PiWalletFill } from "react-icons/pi";
 
-import { RiLogoutBoxRFill } from "react-icons/ri";
+import {
+  RiCalendarScheduleFill,
+  RiCalendarScheduleLine,
+  RiLogoutBoxRFill,
+} from "react-icons/ri";
 import { IoMdAdd } from "react-icons/io";
 import { TbEdit } from "react-icons/tb";
 import { MdDeleteOutline } from "react-icons/md";
@@ -38,8 +42,7 @@ export const icons: Record<string, JSX.Element> = {
   // financeiro
   financeiro: <FaMoneyBillTransfer />,
   categorias: <TbCategoryPlus />,
-  contasfixas: <CiCalendarDate />,
-
+  contasfixas: <RiCalendarScheduleLine />,
   filter: <FaFilter />,
 
   permissoes: <FaSitemap />,

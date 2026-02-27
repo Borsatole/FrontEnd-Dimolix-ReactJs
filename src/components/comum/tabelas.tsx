@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Button } from "./button";
-import {gerarPaginas} from "@services/funcoes-globais";
-
+import { gerarPaginas } from "@services/funcoes-globais";
 
 type ChildrenProps = {
   children: React.ReactNode;
@@ -18,17 +17,22 @@ export function Tabela({ children, ...rest }: ChildrenProps) {
   );
 }
 
-
-
 type LinhaTabelaProps = {
   children: React.ReactNode;
   tipo?: string;
 } & React.HTMLAttributes<HTMLTableRowElement>;
 
-export function LinhaTabela({ children, tipo = "", ...rest }: LinhaTabelaProps) {
+export function LinhaTabela({
+  children,
+  tipo = "",
+  ...rest
+}: LinhaTabelaProps) {
   if (tipo === "body") {
     return (
-      <tr className="hover:bg-[var(--base-variant)] text-center transition " {...rest}>
+      <tr
+        className="hover:bg-[var(--base-variant)] text-center transition "
+        {...rest}
+      >
         {children}
       </tr>
     );
@@ -44,14 +48,17 @@ export function LinhaTabela({ children, tipo = "", ...rest }: LinhaTabelaProps) 
   );
 }
 
-
 type CelulaTabelaProps = {
   children: React.ReactNode;
   tipo?: string;
   colspan?: number;
 } & React.HTMLAttributes<HTMLTableCellElement>;
 
-export function CelulaTabela({ children, tipo = "body", ...rest }: CelulaTabelaProps) {
+export function CelulaTabela({
+  children,
+  tipo = "body",
+  ...rest
+}: CelulaTabelaProps) {
   if (tipo !== "body") {
     return (
       <th
@@ -71,8 +78,6 @@ export function CelulaTabela({ children, tipo = "body", ...rest }: CelulaTabelaP
     </td>
   );
 }
-
-
 
 type ButtonProps = {
   onClick: () => void;
@@ -128,19 +133,19 @@ export function ButtonDelete({ onClick }: ButtonProps) {
   );
 }
 
-
 type ButtonDeleteProps = {
   onClick: () => void;
-}
-
+};
 
 interface MostrarNumeroDeResultadosProps {
-  totalResultados: number
+  totalResultados: number;
 }
-export function MostrarNumeroDeResultados({totalResultados}:MostrarNumeroDeResultadosProps) {
+export function MostrarNumeroDeResultados({
+  totalResultados,
+}: MostrarNumeroDeResultadosProps) {
   return (
     <>
-    <div className="flex justify-between items-center mt-3">
+      <div className="flex justify-between items-center m-3  mt-3">
         <span className="text-lg font-semibold text-[var(--text-color)]">
           ({totalResultados}) resultados encontrados
         </span>
@@ -149,17 +154,16 @@ export function MostrarNumeroDeResultados({totalResultados}:MostrarNumeroDeResul
   );
 }
 
-
 interface RodapeProps {
-  pagina: number,
-  limitePorPagina: number,
-  registros: any[],
-  totalResultados: number
-  totalPaginas: number
-  setPagina: React.Dispatch<React.SetStateAction<number>>
-  setLimitePorPagina: React.Dispatch<React.SetStateAction<number>>
-  mostrarTotalResultados?: boolean
-  mostrarSeletorPorPagina?: boolean
+  pagina: number;
+  limitePorPagina: number;
+  registros: any[];
+  totalResultados: number;
+  totalPaginas: number;
+  setPagina: React.Dispatch<React.SetStateAction<number>>;
+  setLimitePorPagina: React.Dispatch<React.SetStateAction<number>>;
+  mostrarTotalResultados?: boolean;
+  mostrarSeletorPorPagina?: boolean;
 }
 export function Rodape({
   pagina,
@@ -170,60 +174,59 @@ export function Rodape({
   setPagina,
   setLimitePorPagina,
   mostrarTotalResultados = true,
-  mostrarSeletorPorPagina = true
-}:RodapeProps) {
+  mostrarSeletorPorPagina = true,
+}: RodapeProps) {
   return (
     <>
       <div className="flex w-full flex-wrap justify-end items-center gap-6 mt-6">
-
         {mostrarTotalResultados && (
-            <span>
-              {((pagina - 1) * limitePorPagina) + registros.length} de {totalResultados}
-            </span>
+          <span>
+            {(pagina - 1) * limitePorPagina + registros.length} de{" "}
+            {totalResultados}
+          </span>
         )}
 
         {mostrarSeletorPorPagina && (
           <select
-          value={limitePorPagina}
-          name="limitePorPagina"
-          onChange={(e) => setLimitePorPagina(Number(e.target.value))}
-          className=" text-sm p-2 border border-[var(--base-variant)] bg-[var(--base-variant)]  text-[var(--text-color)]"
-        >
-          <option value="7">7</option>
-          <option value="10">10</option>
-          <option value="50">50</option>
-          <option value="100">100</option>
-        </select>
+            value={limitePorPagina}
+            name="limitePorPagina"
+            onChange={(e) => setLimitePorPagina(Number(e.target.value))}
+            className=" text-sm p-2 border border-[var(--base-variant)] bg-[var(--base-variant)]  text-[var(--text-color)]"
+          >
+            <option value="7">7</option>
+            <option value="10">10</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
         )}
-        
       </div>
 
       <div className="flex w-full flex-wrap justify-center items-center gap-2">
-              <Button
-                onClick={() => setPagina(1)}
-                disabled={pagina <= 1}>Primeira</Button>
-              
-      
-              {gerarPaginas(pagina, totalPaginas).map((num) => (
-                <Button
-                  key={num}
-                  onClick={() => setPagina(num)}
-                  className={`px-3 py-2 rounded-md border text-sm ${
-                    num === pagina
-                      ? "bg-[var(--corPrincipal)] text-white font-semibold"
-                      : "bg-[var(--corPrincipal)] text-[var(--text-white)] opacity-40"
-                  }`}
-                  >{num}</Button>
-              ))}
-      
-              <Button
-                onClick={() => setPagina(totalPaginas)}
-                disabled={pagina >= totalPaginas}
-              >
-                Última
-              </Button>
-      
-        </div>
+        <Button onClick={() => setPagina(1)} disabled={pagina <= 1}>
+          Primeira
+        </Button>
+
+        {gerarPaginas(pagina, totalPaginas).map((num) => (
+          <Button
+            key={num}
+            onClick={() => setPagina(num)}
+            className={`px-3 py-2 rounded-md text-sm ${
+              num === pagina
+                ? "bg-[var(--corPrincipal)] text-white font-semibold"
+                : "bg-[var(--corPrincipal)] text-[var(--text-white)] opacity-40"
+            }`}
+          >
+            {num}
+          </Button>
+        ))}
+
+        <Button
+          onClick={() => setPagina(totalPaginas)}
+          disabled={pagina >= totalPaginas}
+        >
+          Última
+        </Button>
+      </div>
     </>
   );
 }

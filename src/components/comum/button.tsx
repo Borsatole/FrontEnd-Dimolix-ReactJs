@@ -21,10 +21,10 @@ export function Button({
     <button
       {...rest}
       type={type}
-      disabled={isDisabled} 
+      disabled={isDisabled}
       onClick={onClick || (() => {})}
       className={`${className || ""} text-white px-4 min-h-10  py-2 text-sm font-medium rounded-md cursor-pointer transition-all ${
-        isDisabled 
+        isDisabled
           ? "opacity-50 cursor-not-allowed bg-[var(--corPrincipal)]"
           : "bg-[var(--corPrincipal)] hover:bg-[var(--corPrincipalHover)]"
       }`}

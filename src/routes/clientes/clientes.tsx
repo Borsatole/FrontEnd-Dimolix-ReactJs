@@ -11,7 +11,7 @@ function Estoque() {
   return (
     <>
       <ContainerSecundario>
-        <TituloPagina>Clientes</TituloPagina>
+        {/* <TituloPagina>Clientes</TituloPagina> */}
         <Tabela />
       </ContainerSecundario>
     </>
