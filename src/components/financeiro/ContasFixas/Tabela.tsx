@@ -190,7 +190,7 @@ function Tabela() {
   }, [pagina, limitePorPagina, queryFiltro]);
 
   useEffect(() => {
-    if (registros.length > 0) {
+    if (registros.length >= 0) {
       setLoading(false);
       setAparecerSuave(true);
     }

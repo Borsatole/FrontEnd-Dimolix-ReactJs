@@ -1,76 +1,35 @@
-import { useState } from "react";
-import { Spinner } from "flowbite-react";
+import { useEffect, useState } from "react";
 import Modal from "@components/modal/Modal";
-import { Button } from "@components/comum/button";
-import { getIcon } from "@src/components/icons";
-import { Update } from "@src/services/crud2";
-import { UseContasFixas } from "@src/context/ContasFixasContext";
-import {
-  FormBuilder,
-  Campo,
-  initFormDataFromRegistro,
-} from "@src/components/comum/Tabelas/Formbuilder";
 import Headermodal from "@src/components/comum/Tabelas/Headermodal";
 import Footermodal from "@src/components/comum/Tabelas/Footermodal";
 import { UseTabela } from "@src/components/comum/Tabelas/TabelaContext";
+import { Options, useCrudRegistro } from "@src/hooks/useCrudRegistro";
+import { FormGroup } from "@src/components/comum/FormGroup";
+import { Input } from "@src/components/comum/input";
 
-type Config = {
-  endpoint: string;
-  campos: Campo[];
-  icone?: string;
-  definicoes: { relistar?: boolean };
-};
-
-const config: Config = {
+const config: Options = {
   endpoint: "/financeiro-contas-fixas",
+  modo: "update",
   icone: "contasfixas",
-  campos: [
-    {
-      label: "Descricao",
-      name: "descricao",
-      campo: "input",
-      options: { type: "text", required: true },
-    },
-    {
-      label: "Categorias",
-      name: "id_categoria",
-      campo: "select",
-      opcoes: [
-        { label: "Combustivel", value: 1 },
-        { label: "Semanais", value: 2 },
-        { label: "Mensais", value: 3 },
-      ],
-      options: { required: true },
-    },
-    {
-      label: "Valor",
-      name: "valor",
-      campo: "input",
-      options: { type: "number", required: true },
-    },
-    {
-      label: "Recorrencia (meses)",
-      name: "recorrencia",
-      campo: "input",
-      options: { type: "number", required: true },
-    },
-    {
-      label: "Dia Vencimento",
-      name: "dia_vencimento",
-      campo: "input",
-      options: { type: "number", required: true },
-    },
-    {
-      label: "Data Fim",
-      name: "data_fim",
-      campo: "input",
-      options: { type: "date" },
-    },
-  ],
-  definicoes: { relistar: true },
+  definicoes: {
+    relistar: true,
+    fecharModal: true,
+  },
 };
 
 export default function ModalEditarRegistro() {
+  /* Campos Controlados */
+  const [descricao, setDescricao] = useState<string>("");
+  const [valor, setValor] = useState<number>(0);
+  const [recorrencia, setRecorrencia] = useState<number>(0);
+  const [id_categoria, setId_categoria] = useState<number>(0);
+
+  const { loading, handleSubmit, fecharModal } = useCrudRegistro({
+    modo: config.modo,
+    endpoint: config.endpoint,
+    definicoes: config.definicoes,
+  });
+
   const {
     registros,
     setRegistros,
@@ -82,62 +41,63 @@ export default function ModalEditarRegistro() {
 
   const registro = registros.find((p) => p.id === selectedRegistro?.id);
 
-  const [formData, setFormData] = useState<Record<string, any>>(() =>
-    initFormDataFromRegistro(config.campos, registro ?? {}),
-  );
-
-  const [loading, setIsLoading] = useState(false);
-
-  const handleChange = (name: string, value: any) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedRegistro?.id) return;
-
-    try {
-      Update<any>({
-        payload: formData,
-        registros,
-        setRegistros,
-        endpoint: `${config.endpoint}/${selectedRegistro.id}`,
-        antesDeExecutar: () => {
-          setIsLoading(true);
-          setLoadingSpiner(true);
-        },
-        depoisDeExecutar: () => {
-          setSelectedRegistro(null);
-          setLoadingSpiner(false);
-          setIsLoading(false);
-          if (config.definicoes.relistar) setRelistar(true);
-        },
-      });
-    } catch {
-      setIsLoading(false);
-      setLoadingSpiner(false);
+  useEffect(() => {
+    if (registro) {
+      setDescricao(registro.descricao);
+      setValor(registro.valor);
+      setRecorrencia(registro.recorrencia);
+      setId_categoria(registro.id_categoria);
     }
+  }, [selectedRegistro?.id]);
+
+  const formData = {
+    descricao,
+    valor,
+    recorrencia,
+    id_categoria,
   };
-
-  const fecharModal = () => setSelectedRegistro(null);
-
-  if (!selectedRegistro) return null;
 
   return (
     <Modal IsOpen={true} onClose={fecharModal} className="min-h-auto">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form
+        onSubmit={(e) => handleSubmit(e, formData)}
+        className="flex flex-col gap-2"
+      >
         <Headermodal
           icone={config.icone}
           titulo="Editar Registro"
           subtitulo="Edite o registro"
         />
         <div className="bg-[var(--base-variant)] p-4">
-          <FormBuilder
-            campos={config.campos}
-            formData={formData}
-            onChange={handleChange}
-            disabled={loading}
-          />
+          <FormGroup label="Nome" id="nome">
+            <Input
+              type="text"
+              name="nome"
+              id="nome"
+              value={descricao || ""}
+              onChange={(e) => setDescricao(e.target.value)}
+            />
+          </FormGroup>
+
+          <FormGroup label="Valor" id="valor">
+            <Input
+              type="number"
+              name="valor"
+              id="valor"
+              value={valor || ""}
+              onChange={(e) => setValor(Number(e.target.value))}
+            />
+          </FormGroup>
+
+          <FormGroup label="Recorrencia" id="recorrencia">
+            <Input
+              type="number"
+              name="recorrencia"
+              id="recorrencia"
+              value={recorrencia || ""}
+              onChange={(e) => setRecorrencia(Number(e.target.value))}
+            />
+          </FormGroup>
         </div>
         <Footermodal loading={loading} />
       </form>

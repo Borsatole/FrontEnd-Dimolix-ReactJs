@@ -1,132 +1,109 @@
-import { useState } from "react";
 import Modal from "@components/modal/Modal";
-import { Button } from "@components/comum/button";
-import { getIcon } from "@src/components/icons";
-import { Create } from "@src/services/crud2";
-import { UseContasFixas } from "@src/context/ContasFixasContext";
-import {
-  FormBuilder,
-  Campo,
-  initFormData,
-} from "@src/components/comum/Tabelas/Formbuilder";
 import Headermodal from "@src/components/comum/Tabelas/Headermodal";
 import Footermodal from "@src/components/comum/Tabelas/Footermodal";
-import { UseTabela } from "@src/components/comum/Tabelas/TabelaContext";
+import { Options, useCrudRegistro } from "@src/hooks/useCrudRegistro";
+import { useState } from "react";
+import { FormGroup } from "@src/components/comum/FormGroup";
+import { Input } from "@src/components/comum/input";
+import ErrorMessage from "@src/components/comum/Tabelas/ErrorMessage";
 
-type Config = {
-  endpoint: string;
-  campos: Campo[];
-  icone?: string;
-  definicoes: { relistar?: boolean };
-};
-
-const config: Config = {
+const config: Options = {
+  modo: "create",
   endpoint: "/financeiro-contas-fixas",
   icone: "contasfixas",
-  campos: [
-    {
-      label: "Descricao",
-      name: "descricao",
-      campo: "input",
-      defaultValue: "",
-      options: { type: "text", required: true },
-    },
-    {
-      label: "Categorias",
-      name: "id_categoria",
-      campo: "select",
-      opcoes: [
-        { label: "Diarias", value: 1 },
-        { label: "Semanais", value: 2 },
-        { label: "Mensais", value: 3 },
-      ],
-      options: { required: true },
-    },
-    {
-      label: "Valor",
-      name: "valor",
-      campo: "input",
-      defaultValue: "",
-      options: { type: "number", required: true },
-    },
-    {
-      label: "Recorrencia",
-      name: "recorrencia",
-      campo: "input",
-      defaultValue: "",
-      options: { type: "number", required: true },
-    },
-    {
-      label: "Dia Vencimento",
-      name: "dia_vencimento",
-      campo: "input",
-      defaultValue: "",
-      options: { type: "number", required: true },
-    },
-    {
-      label: "Data Fim",
-      name: "data_fim",
-      campo: "input",
-      defaultValue: "",
-      options: { type: "date" },
-    },
-  ],
-  definicoes: { relistar: true },
+  definicoes: {
+    relistar: true,
+    fecharModal: true,
+  },
 };
 
 export default function ModalAdicionarRegistro() {
-  const { setRelistar, setLoadingSpiner, setAbrirModalNovoRegistro } =
-    UseTabela();
+  /* Campos Controlados */
+  const [descricao, setDescricao] = useState<string>("");
+  const [valor, setValor] = useState<number>(0);
+  const [recorrencia, setRecorrencia] = useState<number>(0);
+  const [id_categoria, setId_categoria] = useState<number>(0);
 
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState(() => initFormData(config.campos));
+  /* Erro */
+  const [erro, setErro] = useState<string | null>(null);
 
-  const handleChange = (name: string, value: any) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  function validar() {
+    if (!descricao.trim()) return "O campo descrição é obrigatório";
+    if (valor <= 0) return "O valor deve ser maior que zero";
+    if (recorrencia <= 0) return "Recorrência inválida";
+    // if (!id_categoria) return "Categoria é obrigatória";
+
+    return null;
+  }
+
+  const formData = {
+    descricao,
+    valor,
+    recorrencia,
+    id_categoria,
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      Create<any>({
-        payload: formData,
-        endpoint: config.endpoint,
-        antesDeExecutar: () => {
-          setLoading(true);
-          setLoadingSpiner(true);
-        },
-        depoisDeExecutar: () => {
-          setAbrirModalNovoRegistro(false);
-          setLoadingSpiner(false);
-          setLoading(false);
-          if (config.definicoes.relistar) setRelistar(true);
-        },
-      });
-    } catch {
-      setLoading(false);
-      setLoadingSpiner(false);
-    }
-  };
-
-  const fecharModal = () => setAbrirModalNovoRegistro(false);
+  const { loading, handleSubmit, fecharModal } = useCrudRegistro({
+    modo: "create",
+    endpoint: config.endpoint,
+    definicoes: config.definicoes,
+  });
 
   return (
     <Modal IsOpen={true} onClose={fecharModal} className="min-h-auto">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          const erro = validar();
+
+          if (erro) {
+            setErro(erro);
+            return;
+          }
+
+          handleSubmit(e, formData);
+        }}
+        className="flex flex-col"
+      >
         <Headermodal
           icone={config.icone}
           titulo="Novo Registro"
           subtitulo="Crie um novo registro"
         />
+
         <div className="bg-[var(--base-variant)] p-4">
-          <FormBuilder
-            campos={config.campos}
-            formData={formData}
-            onChange={handleChange}
-            disabled={loading}
-          />
+          <FormGroup label="Nome" id="nome">
+            <Input
+              type="text"
+              name="nome"
+              id="nome"
+              value={descricao || ""}
+              onChange={(e) => setDescricao(e.target.value)}
+            />
+          </FormGroup>
+
+          <FormGroup label="Valor" id="valor">
+            <Input
+              type="number"
+              name="valor"
+              id="valor"
+              value={valor || ""}
+              onChange={(e) => setValor(Number(e.target.value))}
+            />
+          </FormGroup>
+
+          <FormGroup label="Recorrencia" id="recorrencia">
+            <Input
+              type="number"
+              name="recorrencia"
+              id="recorrencia"
+              value={recorrencia || ""}
+              onChange={(e) => setRecorrencia(Number(e.target.value))}
+            />
+          </FormGroup>
         </div>
 
+        {erro && <ErrorMessage message={erro} />}
         <Footermodal loading={loading} />
       </form>
     </Modal>

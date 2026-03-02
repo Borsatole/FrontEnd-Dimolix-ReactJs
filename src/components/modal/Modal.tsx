@@ -20,7 +20,7 @@ function Modal({ IsOpen, onClose, children, ...rest }: any) {
     <div
       {...rest}
       className="fixed inset-0 z-[30] bg-[var(--fundo-modal)]/90 flex items-center justify-center animate-fadeIn"
-      onClick={onClose} // Clique fora fecha o modal
+      // onClick={onClose} // Clique fora fecha o modal
     >
       <div
         {...rest}

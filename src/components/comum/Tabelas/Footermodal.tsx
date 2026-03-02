@@ -5,7 +5,7 @@ function Footermodal({ loading, cancel }: any) {
   return (
     <>
       <div className="flex justify-end gap-4 p-4">
-        <Button type="submit" className="w-full mt-4" loading={loading}>
+        <Button type="submit" className="w-full" loading={loading}>
           Salvar
         </Button>
       </div>
