@@ -8,19 +8,33 @@ import {
   useEffect,
 } from "react";
 
+export interface BaseTabelaResponse<T = any> {
+  dados?: T[];
+  total?: number;
+  [key: string]: any; // permite propriedades extras
+}
 interface TabelaContextType {
   registros: any[];
   setRegistros: Dispatch<SetStateAction<any[]>>;
+
+  data: BaseTabelaResponse | null;
+  setData: Dispatch<SetStateAction<BaseTabelaResponse | null>>;
+
   relistar: boolean;
   setRelistar: Dispatch<SetStateAction<boolean>>;
+
   loadingSpiner: boolean;
   setLoadingSpiner: Dispatch<SetStateAction<boolean>>;
+
   selectedRegistro: any | null;
   setSelectedRegistro: Dispatch<SetStateAction<any | null>>;
+
   abrirModalNovoRegistro: boolean;
   setAbrirModalNovoRegistro: Dispatch<SetStateAction<boolean>>;
+
   abrirModalEditarRegistro: boolean;
   setAbrirModalEditarRegistro: Dispatch<SetStateAction<boolean>>;
+
   abrirModalDetalhesRegistro: boolean;
   setAbrirModalDetalhesRegistro: Dispatch<SetStateAction<boolean>>;
 }
@@ -29,6 +43,7 @@ const TabelaContext = createContext<TabelaContextType | undefined>(undefined);
 
 export function TabelaProvider({ children }: { children: ReactNode }) {
   const [registros, setRegistros] = useState<any[]>([]);
+  const [data, setData] = useState<BaseTabelaResponse | null>(null);
   const [relistar, setRelistar] = useState(false);
   const [loadingSpiner, setLoadingSpiner] = useState(true);
   const [selectedRegistro, setSelectedRegistro] = useState<any | null>(null);
@@ -43,6 +58,8 @@ export function TabelaProvider({ children }: { children: ReactNode }) {
       value={{
         registros,
         setRegistros,
+        data,
+        setData,
         relistar,
         setRelistar,
         loadingSpiner,

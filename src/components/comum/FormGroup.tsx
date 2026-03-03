@@ -1,11 +1,10 @@
 import { Label } from "./label";
 
-
 interface FormGroupProps {
   label?: string;
   id?: string;
   children?: React.ReactNode;
-  [key: string]: any
+  [key: string]: any;
 }
 
 export function FormGroup({ label, id, children, ...rest }: FormGroupProps) {
@@ -16,4 +15,3 @@ export function FormGroup({ label, id, children, ...rest }: FormGroupProps) {
     </div>
   );
 }
-

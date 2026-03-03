@@ -45,6 +45,8 @@ function Tabela() {
   const {
     registros,
     setRegistros,
+    data,
+    setData,
     relistar,
     setRelistar,
     loadingSpiner,
@@ -110,7 +112,7 @@ function Tabela() {
             >
               <HiOutlineRefresh className="text-sm" />
               <span>
-                {recorrencia} {recorrencia === 1 ? "mês" : "meses"}
+                {recorrencia} {Number(recorrencia) === 1 ? "mês" : "meses"}
               </span>
             </div>
           </div>
@@ -166,6 +168,7 @@ function Tabela() {
       pagina,
       limitePorPagina,
       setRegistros,
+      setData,
       setTotalResultados,
       setTotalPaginas,
       setLoadingSpiner,
@@ -181,6 +184,7 @@ function Tabela() {
       pagina,
       limitePorPagina,
       setRegistros,
+      setData,
       setTotalResultados,
       setTotalPaginas,
       setLoadingSpiner,
