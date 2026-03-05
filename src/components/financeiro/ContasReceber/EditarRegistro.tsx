@@ -10,11 +10,12 @@ import { SelectModificado } from "@src/components/comum/select";
 import ErrorMessage from "@src/components/comum/Tabelas/ErrorMessage";
 import { BtnSelectMes } from "./NovoRegistro";
 import { SelectAtualizado } from "@src/components/comum/SelectAtualizado";
-import CalendarDays from "./CalendarDays";
 import { Alert } from "flowbite-react";
+import dayjs from "dayjs";
+import { SwitchPadrao } from "@src/components/comum/SwitchPadrao";
 
 const config: Options = {
-  endpoint: "/financeiro-contas-fixas",
+  endpoint: "/financeiro",
   modo: "update",
   icone: "contasfixas",
   definicoes: {
@@ -34,17 +35,18 @@ export default function ModalEditarRegistro() {
     setSelectedRegistro,
   } = UseTabela();
 
-  const [mostrarRecorrencia, setMostrarRecorrencia] = useState<boolean>(false);
-  const [categorias, setCategorias] = useState<any[]>([]);
-
   /* Campos Controlados */
   const [descricao, setDescricao] = useState<string>("");
-  const [valor, setValor] = useState<number>(0);
-  const [recorrencia, setRecorrencia] = useState<number>(1);
   const [id_categoria, setId_categoria] = useState<string>("");
+  const [data_movimentacao, setData_movimentacao] = useState<string | null>(
+    dayjs().format("YYYY-MM-DD"),
+  );
+  const [valor, setValor] = useState<number>(0);
+  const [tipo_movimentacao, setTipo_movimentacao] = useState<string>("entrada");
   const [forma_pagamento, setForma_Pagamento] = useState<string>("");
   const [dia_vencimento, setDia_Vencimento] = useState<number | null>(1);
-  const [data_fim, setData_fim] = useState<string | null>(null);
+  const [observacoes, setObservacoes] = useState<string>("");
+  const [status, setStatus] = useState<string>("concluido");
 
   /* Erro */
   const [erro, setErro] = useState<string | null>(null);
@@ -52,10 +54,11 @@ export default function ModalEditarRegistro() {
   function validar() {
     if (!descricao.trim()) return "O campo descrição é obrigatório";
     if (valor <= 0) return "O valor deve ser maior que zero";
-    if (recorrencia < 1) return "Recorrência inválida";
     if (!id_categoria) return "Categoria é obrigatória";
+    if (!data_movimentacao) return "Data da movimentação é obrigatório";
     if (!forma_pagamento) return "Forma de pagamento é obrigatória";
-    if (!dia_vencimento) return "Dia de vencimento é obrigatório";
+    if (!status) return "Status é obrigatório";
+    if (!tipo_movimentacao) return "Tipo de movimentação é obrigatório";
 
     return null;
   }
@@ -72,22 +75,25 @@ export default function ModalEditarRegistro() {
     if (registro) {
       setDescricao(registro.descricao);
       setValor(registro.valor);
-      setRecorrencia(registro.recorrencia);
       setId_categoria(registro.id_categoria);
+      setData_movimentacao(registro.data_movimentacao);
       setForma_Pagamento(registro.forma_pagamento);
       setDia_Vencimento(registro.dia_vencimento);
-      setData_fim(registro.data_fim);
+      setObservacoes(registro.observacoes);
+      setStatus(registro.status);
     }
   }, [selectedRegistro?.id]);
 
   const formData = {
     descricao,
     valor,
-    recorrencia,
     id_categoria,
     forma_pagamento,
     dia_vencimento,
-    data_fim,
+    data_movimentacao,
+    tipo_movimentacao,
+    observacoes,
+    status,
   };
 
   return (
@@ -124,93 +130,6 @@ export default function ModalEditarRegistro() {
             />
           </FormGroup>
 
-          <FormGroup label="Valor" id="valor">
-            <Input
-              type="number"
-              name="valor"
-              id="valor"
-              value={valor || ""}
-              onChange={(e) => setValor(Number(e.target.value))}
-            />
-          </FormGroup>
-
-          <FormGroup label="Recorrencia" id="valor">
-            <div className="gap-1 grid grid-cols-1 sm:grid-cols-3 justify-start items-center">
-              <BtnSelectMes
-                texto="a cada mês"
-                value={1}
-                recorrenciaAtual={recorrencia}
-                onClick={() => setRecorrencia(1)}
-              />
-
-              <BtnSelectMes
-                texto="a cada ano"
-                value={12}
-                recorrenciaAtual={recorrencia}
-                onClick={() => setRecorrencia(12)}
-              />
-
-              <BtnSelectMes
-                texto="a cada 3 meses"
-                value={3}
-                recorrenciaAtual={recorrencia}
-                onClick={() => setRecorrencia(3)}
-              />
-
-              <BtnSelectMes
-                texto="a cada 6 meses"
-                value={6}
-                recorrenciaAtual={recorrencia}
-                onClick={() => setRecorrencia(6)}
-              />
-
-              <BtnSelectMes
-                texto="Personalizado"
-                value={6}
-                onClick={() => setMostrarRecorrencia(!mostrarRecorrencia)}
-              />
-            </div>
-          </FormGroup>
-
-          <FormGroup
-            label="Recorrencia"
-            id="recorrencia"
-            className={`${mostrarRecorrencia ? "" : "hidden"}`}
-          >
-            <Input
-              type="number"
-              name="recorrencia"
-              id="recorrencia"
-              value={recorrencia || ""}
-              onChange={(e) => setRecorrencia(Number(e.target.value))}
-            />
-          </FormGroup>
-
-          <FormGroup label="Dia de vencimento" id="dia_vencimento">
-            <CalendarDays
-              daySelecionado={dia_vencimento}
-              setDay={setDia_Vencimento}
-            />
-          </FormGroup>
-
-          <FormGroup label="Data Final" id="data_fim">
-            <Input
-              type="date"
-              name="data_fim"
-              id="data_fim"
-              value={data_fim || ""}
-              onChange={(e) => setData_fim(e.target.value)}
-            />
-
-            <Alert color="warning" className="mt-3 p-4">
-              <span className="text-sm font-semibold">Atenção: </span>
-              <span className="text-xs">
-                Caso não houver data final, se repetirá o lançamento sem uma
-                data limite.
-              </span>
-            </Alert>
-          </FormGroup>
-
           <FormGroup label="Categoria" id="id_categoria">
             <SelectAtualizado
               name="id_categoria"
@@ -231,6 +150,48 @@ export default function ModalEditarRegistro() {
               value={forma_pagamento}
               onChange={(e) => setForma_Pagamento(e.target.value)}
             />
+          </FormGroup>
+
+          <FormGroup label="Valor" id="valor">
+            <Input
+              type="number"
+              name="valor"
+              id="valor"
+              value={valor || ""}
+              onChange={(e) => setValor(Number(e.target.value))}
+            />
+          </FormGroup>
+
+          <FormGroup label="Data da movimentação" id="data_movimentacao">
+            <Input
+              type="date"
+              name="data_movimentacao"
+              id="data_movimentacao"
+              value={data_movimentacao || ""}
+              onChange={(e) => setData_movimentacao(e.target.value)}
+            />
+          </FormGroup>
+
+          <FormGroup label="Status da conta" id="status">
+            <div
+              className={`
+                      flex items-center justify-between p-3 rounded-lg border-3 border-[var(--base-color)] bg-[var(--base-variant)]`}
+            >
+              <span
+                className={`text-sm font-medium ${
+                  status === "concluido" ? "text-green-600" : "text-yellow-600"
+                }`}
+              >
+                {status === "concluido" ? "Conta Paga" : "Conta pendente"}
+              </span>
+
+              <SwitchPadrao
+                checked={status === "concluido"}
+                onChange={(checked) =>
+                  setStatus(checked ? "concluido" : "pendente")
+                }
+              />
+            </div>
           </FormGroup>
         </div>
         <Footermodal loading={loading} />

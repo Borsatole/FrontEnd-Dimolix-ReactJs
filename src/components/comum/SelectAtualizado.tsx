@@ -63,7 +63,6 @@ export const SelectAtualizado = React.forwardRef<
             font-size: 0.9rem;
             font-weight: 450;
             font-family: inherit;
-            color: var(--cortexto, #111827);
             background-color: var(--base-color, #ffffff);
             border: 1.5px solid var(--base-variant, #e5e7eb);
             border-radius: 10px;

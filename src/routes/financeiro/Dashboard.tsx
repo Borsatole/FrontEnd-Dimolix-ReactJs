@@ -1,5 +1,5 @@
 import ContainerSecundario from "@src/components/comum/containerSecundario";
-import CardOrders from "@src/components/comum/StatsLte";
+import CardOrders from "@src/components/comum/CardStats";
 import GraficoEntradaESaida from "@src/components/financeiro/graficoEntradaESaida";
 import SelectMesAno from "@src/components/financeiro/selectMes";
 import Tabela from "@src/components/financeiro/Tabela";

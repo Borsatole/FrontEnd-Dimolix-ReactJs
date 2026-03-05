@@ -26,6 +26,9 @@ import { SoftRender } from "@src/components/comum/SoftRender";
 import Novoregistrobtn from "@src/components/comum/Tabelas/Novoregistrobtn";
 import { UseTabela } from "@src/components/comum/Tabelas/TabelaContext";
 import { HiOutlineRefresh } from "react-icons/hi";
+import { FiltroCadastros } from "../FiltroRegistro";
+import dayjs from "dayjs";
+import StatsFinanceiro from "./Stats";
 
 type Config = {
   endpoint: string;
@@ -33,7 +36,7 @@ type Config = {
 };
 
 const config: Config = {
-  endpoint: "/financeiro-contas-fixas",
+  endpoint: "/financeiro",
   icone: "contasfixas",
 };
 
@@ -73,10 +76,6 @@ function Tabela() {
     setTotalResultados,
   } = usePaginacao();
 
-  // useEffect(() => {
-  //   setQueryFiltro("order_by=descricao");
-  // }, []);
-
   // Configuração das colunas da tabela
   const colunas: ColunaConfig<any>[] = [
     {
@@ -90,15 +89,10 @@ function Tabela() {
       render: (registro) => registro.descricao ?? "-",
     },
     {
-      key: "valor",
-      label: "VALOR",
-      render: (registro) => registro.valor || "-",
-    },
-    {
-      key: "recorrencia",
-      label: "RECORRENCIA",
+      key: "categoria",
+      label: "CATEGORIA",
       render: (registro) => {
-        const recorrencia = registro.recorrencia;
+        const categoria = registro.categoria;
 
         return (
           <div className="flex justify-center">
@@ -114,10 +108,44 @@ function Tabela() {
                       uppercase tracking-wide 
                       shadow-md"
             >
-              <HiOutlineRefresh className="text-sm" />
-              <span>
-                {recorrencia} {Number(recorrencia) === 1 ? "mês" : "meses"}
-              </span>
+              <span>{categoria}</span>
+            </div>
+          </div>
+        );
+      },
+    },
+
+    {
+      key: "valor",
+      label: "VALOR",
+      render: (registro) => registro.valor || "-",
+    },
+    {
+      key: "status",
+      label: "STATUS",
+      render: (registro) => {
+        const status = registro.status;
+
+        return (
+          <div className="flex justify-center">
+            <div
+              className={`
+                flex items-center gap-2 
+                      
+                ${
+                  status.toLowerCase() === "concluido"
+                    ? "bg-green-600 text-white"
+                    : "bg-gradient-to-r from-[var(--corPrincipal)]/30 to-[var(--corPrincipal)]/20"
+                }
+                      
+                      rounded-full 
+                      px-4 py-1.5 
+                      text-xs font-semibold 
+                      uppercase tracking-wide 
+                      shadow-md
+                `}
+            >
+              <span>{status}</span>
             </div>
           </div>
         );
@@ -168,7 +196,7 @@ function Tabela() {
     if (!relistar) return;
     Read({
       endpoint: `${config.endpoint}`,
-      queryFiltro,
+      queryFiltro: `tipo_movimentacao=entrada`,
       pagina,
       limitePorPagina,
       setRegistros,
@@ -184,7 +212,7 @@ function Tabela() {
   useEffect(() => {
     Read({
       endpoint: `${config.endpoint}`,
-      queryFiltro,
+      queryFiltro: `tipo_movimentacao=entrada`,
       pagina,
       limitePorPagina,
       setRegistros,
@@ -210,8 +238,9 @@ function Tabela() {
         icone={config.icone}
         onClick={() => setAbrirModalNovoRegistro(true)}
       />
+      <StatsFinanceiro />
       {/* <FiltroCadastros onFiltrar={setQueryFiltro} /> */}
-      <MostrarNumeroDeResultados totalResultados={totalResultados} />
+      {/* <MostrarNumeroDeResultados totalResultados={totalResultados} /> */}
 
       {/* Tabela dinâmica */}
       <SoftRender show={aparecerSuave}>

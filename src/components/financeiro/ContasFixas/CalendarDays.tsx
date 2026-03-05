@@ -9,7 +9,7 @@ function CalendarDays({ daySelecionado = 1, setDay }: CalendarDaysProps) {
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
   return (
-    <div className="grid grid-cols-4 sm:grid-cols-7 gap-1 p-3 border-2 border-[var(--base-color)] rounded-xl bg-[var(--base-variant)]">
+    <div className="grid grid-cols-4 sm:grid-cols-11 gap-1 p-3 border-2 border-[var(--base-color)] rounded-xl bg-[var(--base-variant)]">
       {days.map((day) => (
         <BtnDay
           key={day}

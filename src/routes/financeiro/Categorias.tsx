@@ -1,6 +1,6 @@
 import { Button } from "@src/components/comum/button";
 import ContainerSecundario from "@src/components/comum/containerSecundario";
-import CardOrders from "@src/components/comum/StatsLte";
+import CardOrders from "@src/components/comum/CardStats";
 import { TituloPagina } from "@src/components/comum/Textos";
 import Entradas from "@src/components/financeiro/Categorias/Entradas";
 import NovoRegistro from "@src/components/financeiro/Categorias/NovoRegistro";

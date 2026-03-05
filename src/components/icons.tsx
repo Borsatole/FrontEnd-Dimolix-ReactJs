@@ -16,7 +16,11 @@ import { MdOutlineSave } from "react-icons/md";
 import { FaFilter, FaUserFriends } from "react-icons/fa";
 import { FaSitemap } from "react-icons/fa";
 import { FaReceipt } from "react-icons/fa";
-import { BsCalendarDateFill } from "react-icons/bs";
+import {
+  BsCalendarDateFill,
+  BsGraphDownArrow,
+  BsGraphUpArrow,
+} from "react-icons/bs";
 import { FaMapMarkedAlt } from "react-icons/fa";
 import { BiSolidBookContent } from "react-icons/bi";
 
@@ -43,6 +47,8 @@ export const icons: Record<string, JSX.Element> = {
   financeiro: <FaMoneyBillTransfer />,
   categorias: <TbCategoryPlus />,
   contasfixas: <RiCalendarScheduleLine />,
+  contasapagar: <BsGraphDownArrow />,
+  contasareceber: <BsGraphUpArrow />,
   filter: <FaFilter />,
 
   permissoes: <FaSitemap />,

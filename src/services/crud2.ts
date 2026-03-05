@@ -1,7 +1,6 @@
 import { requisicaoDelete, requisicaoGet, requisicaoPost, requisicaoPut } from "@services/requisicoes";
 import Alerta from "@components/comum/alertas";
 import { Confirm } from "@components/comum/alertas";
-import { useEffect } from "react";
 
 
 export interface BaseRegistro {
