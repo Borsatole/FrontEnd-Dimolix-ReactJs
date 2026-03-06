@@ -25,10 +25,9 @@ import { usePaginacao } from "@src/hooks/UsePaginacao";
 import { SoftRender } from "@src/components/comum/SoftRender";
 import Novoregistrobtn from "@src/components/comum/Tabelas/Novoregistrobtn";
 import { UseTabela } from "@src/components/comum/Tabelas/TabelaContext";
-import { HiOutlineRefresh } from "react-icons/hi";
-import { FiltroCadastros } from "../FiltroRegistro";
-import dayjs from "dayjs";
 import StatsFinanceiro from "./Stats";
+import { useRefresh } from "@src/context/RefreshContext";
+import { useLocation } from "react-router-dom";
 
 type Config = {
   endpoint: string;
@@ -41,6 +40,7 @@ const config: Config = {
 };
 
 function Tabela() {
+  const { setRefresh } = useRefresh();
   const [loading, setLoading] = useState(true);
   const [aparecerSuave, setAparecerSuave] = useState(false);
 
@@ -124,7 +124,7 @@ function Tabela() {
       key: "status",
       label: "STATUS",
       render: (registro) => {
-        const status = registro.status;
+        const status = registro.status || "";
 
         return (
           <div className="flex justify-center">
@@ -231,6 +231,12 @@ function Tabela() {
       setAparecerSuave(true);
     }
   }, [registros]);
+
+  // useEffect(() => {
+  //   const refreshTabela = () => setRelistar(true);
+  //   setRefresh(refreshTabela);
+  //   return () => setRefresh(undefined);
+  // }, []);
 
   return (
     <>

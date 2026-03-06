@@ -26,6 +26,8 @@ import { SoftRender } from "@src/components/comum/SoftRender";
 import Novoregistrobtn from "@src/components/comum/Tabelas/Novoregistrobtn";
 import { UseTabela } from "@src/components/comum/Tabelas/TabelaContext";
 import { HiOutlineRefresh } from "react-icons/hi";
+import { useLocation } from "react-router-dom";
+import { useRefresh } from "@src/context/RefreshContext";
 
 type Config = {
   endpoint: string;
@@ -38,6 +40,7 @@ const config: Config = {
 };
 
 function Tabela() {
+  const { setRefresh } = useRefresh();
   const [loading, setLoading] = useState(true);
   const [aparecerSuave, setAparecerSuave] = useState(false);
 
@@ -72,10 +75,6 @@ function Tabela() {
     totalResultados,
     setTotalResultados,
   } = usePaginacao();
-
-  // useEffect(() => {
-  //   setQueryFiltro("order_by=descricao");
-  // }, []);
 
   // Configuração das colunas da tabela
   const colunas: ColunaConfig<any>[] = [
@@ -203,6 +202,12 @@ function Tabela() {
       setAparecerSuave(true);
     }
   }, [registros]);
+
+  // useEffect(() => {
+  //   const refreshTabela = () => setRelistar(true);
+  //   setRefresh(refreshTabela);
+  //   return () => setRefresh(undefined);
+  // }, []);
 
   return (
     <>

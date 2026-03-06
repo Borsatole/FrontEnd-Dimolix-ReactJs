@@ -1,3 +1,4 @@
+import { useRefresh } from "@src/context/RefreshContext";
 import {
   createContext,
   useContext,
@@ -7,6 +8,7 @@ import {
   SetStateAction,
   useEffect,
 } from "react";
+import { useLocation } from "react-router-dom";
 
 export interface BaseTabelaResponse<T = any> {
   dados?: T[];
@@ -42,6 +44,8 @@ interface TabelaContextType {
 const TabelaContext = createContext<TabelaContextType | undefined>(undefined);
 
 export function TabelaProvider({ children }: { children: ReactNode }) {
+  const { setRefresh } = useRefresh();
+  const location = useLocation();
   const [registros, setRegistros] = useState<any[]>([]);
   const [data, setData] = useState<BaseTabelaResponse | null>(null);
   const [relistar, setRelistar] = useState(false);
@@ -52,6 +56,12 @@ export function TabelaProvider({ children }: { children: ReactNode }) {
     useState(false);
   const [abrirModalDetalhesRegistro, setAbrirModalDetalhesRegistro] =
     useState(false);
+
+  useEffect(() => {
+    const refreshTabela = () => setRelistar(true);
+    setRefresh(refreshTabela);
+    return () => setRefresh(undefined);
+  }, [location.pathname]);
 
   return (
     <TabelaContext.Provider
@@ -81,6 +91,7 @@ export function TabelaProvider({ children }: { children: ReactNode }) {
 
 export function UseTabela() {
   const context = useContext(TabelaContext);
-  if (!context) throw new Error("Context deve ser usado dentro de Provider");
+  if (!context)
+    throw new Error("Context deve ser usado dentro do TabelaProvider");
   return context;
 }

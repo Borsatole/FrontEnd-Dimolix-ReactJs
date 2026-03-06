@@ -1,59 +1,44 @@
-import { useEffect, useState } from "react";
-import { FaCloudArrowDown } from "react-icons/fa6";
+import { useState } from "react";
+import { GrRefresh } from "react-icons/gr";
 import LoadingSpiner from "@src/components/loader/LoadingSpiner";
-import { useVelocidadeReal } from "@src/hooks/useVelocidadeConexao";
-import Alerta from "../comum/alertas";
+import { useRefresh } from "@src/context/RefreshContext";
+import { UseTabela } from "@src/components/comum/Tabelas/TabelaContext";
 
 function AtualizarButton() {
-  const { mbps, medindo, medir } = useVelocidadeReal();
+  const { refresh } = useRefresh();
+  const [loading, setLoading] = useState(false);
 
-  const velocidades = [
-    { limite: 5, qualidade: "Ruim" },
-    { limite: 15, qualidade: "Regular" },
-    { limite: 100, qualidade: "Bom" },
-    { limite: Infinity, qualidade: "Excelente" },
-  ];
+  function atualizar() {
+    refresh?.();
+  }
 
-  const [atualizando, setAtualizando] = useState(false);
-  const [velocidade, setVelocidade] = useState<number | null>(null);
-  const [qualidade, setQualidade] = useState<string | null>(null);
-
-  useEffect(() => {
-    setVelocidade(mbps);
-  }, [mbps]);
-
-  useEffect(() => {
-    if (velocidade !== null) {
-      const { qualidade } = velocidades.find((v) => velocidade <= v.limite)!;
-      setQualidade(qualidade);
-
-      Alerta(
-        "swal",
-        "success",
-        `Velocidade de conexão: ${qualidade} (${velocidade} Mbps)`,
-      );
-    }
-  }, [velocidade]);
-
-  function handleClick() {
-    setAtualizando(true);
-
+  function animacao() {
+    setLoading(true);
     setTimeout(() => {
-      medir();
-      setAtualizando(false);
-    }, 1000);
+      setLoading(false);
+      atualizar();
+    }, 2000);
   }
 
   return (
-    <div
-      className="w-10 h-10 bg-[var(--base-variant)] cursor-pointer
-      flex items-center justify-center rounded-full text-[var(--text-color)]"
-      onClick={handleClick}
+    <button
+      type="button"
+      onClick={animacao}
+      disabled={loading}
+      className={`
+        cursor-pointer
+        w-10 h-10
+        bg-[var(--base-variant)]
+        flex items-center justify-center
+        rounded-full
+        text-[var(--text-color)]
+        hover:scale-105
+        active:scale-95
+        transition
+        disabled:opacity-60`}
     >
-      <LoadingSpiner loading={atualizando}>
-        <FaCloudArrowDown size={20} aria-disabled={atualizando} />
-      </LoadingSpiner>
-    </div>
+      <GrRefresh size={18} className={loading ? "animate-spin" : ""} />
+    </button>
   );
 }
 

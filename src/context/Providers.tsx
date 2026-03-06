@@ -9,6 +9,7 @@ import { DemandasProvider } from "./DemandasContext";
 import { FinanceiroProvider } from "./FinanceiroContext";
 import { ContasFixasProvider } from "./ContasFixasContext";
 import { TabelaProvider } from "@src/components/comum/Tabelas/TabelaContext";
+import { RefreshProvider } from "./RefreshContext";
 
 interface AppProvidersProps {
   children: ReactNode;
@@ -16,22 +17,24 @@ interface AppProvidersProps {
 
 export function AppProviders({ children }: AppProvidersProps) {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <MenuProvider>
-          <ClientesProvider>
-            <FinanceiroProvider>
-              <EstoqueProvider>
-                <ContasFixasProvider>
-                  <TabelaProvider>
-                    <DemandasProvider>{children}</DemandasProvider>
-                  </TabelaProvider>
-                </ContasFixasProvider>
-              </EstoqueProvider>
-            </FinanceiroProvider>
-          </ClientesProvider>
-        </MenuProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <RefreshProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <MenuProvider>
+            <ClientesProvider>
+              <FinanceiroProvider>
+                <EstoqueProvider>
+                  <ContasFixasProvider>
+                    <TabelaProvider>
+                      <DemandasProvider>{children}</DemandasProvider>
+                    </TabelaProvider>
+                  </ContasFixasProvider>
+                </EstoqueProvider>
+              </FinanceiroProvider>
+            </ClientesProvider>
+          </MenuProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </RefreshProvider>
   );
 }
