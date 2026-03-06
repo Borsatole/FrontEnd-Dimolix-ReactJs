@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormGroup } from "@components/comum/FormGroup";
 import { Input } from "@components/comum/input";
 import { SelectModificado } from "@components/comum/select";
 import { Datas } from "@src/services/funcoes-globais";
 import { FaFilter, FaEraser, FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { SelectAtualizado } from "@src/components/comum/SelectAtualizado";
+import { UseTabela } from "@src/components/comum/Tabelas/TabelaContext";
 
 interface FiltroProps {
   onFiltrar: (queryString: string) => void;
@@ -11,15 +13,21 @@ interface FiltroProps {
 
 export function FiltroCadastros({ onFiltrar }: FiltroProps) {
   const { primeiroDia, ultimoDia } = Datas();
-  const [expandido, setExpandido] = useState(true);
+  const { data } = UseTabela();
+  const [expandido, setExpandido] = useState(false);
 
   const [filtros, setFiltros] = useState({
     id: "",
     descricao: "",
     categoria: "",
-    valor: "",
     status: "",
+    data_inicio: primeiroDia,
+    data_fim: ultimoDia,
   });
+
+  useEffect(() => {
+    console.log(filtros);
+  }, [filtros]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -41,8 +49,9 @@ export function FiltroCadastros({ onFiltrar }: FiltroProps) {
       id: "",
       descricao: "",
       categoria: "",
-      valor: "",
       status: "",
+      data_inicio: primeiroDia,
+      data_fim: ultimoDia,
     });
     onFiltrar("");
   };
@@ -105,48 +114,39 @@ export function FiltroCadastros({ onFiltrar }: FiltroProps) {
         }`}
       >
         <form className="p-6 pt-2" onSubmit={(e) => e.preventDefault()}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <FormGroup id="nome" label="NOME">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <FormGroup id="descricao" label="DESCRICAO">
               <Input
                 type="text"
-                id="nome"
-                name="nome"
+                id="descricao"
+                name="descricao"
                 value={filtros.descricao}
                 onChange={handleChange}
                 className="w-full"
               />
             </FormGroup>
 
-            <FormGroup id="email" label="EMAIL">
-              <Input
-                type="text"
-                id="email"
-                name="email"
-                value={filtros.email}
+            <FormGroup id="id_categoria" label="CATEGORIA">
+              <SelectAtualizado
+                name="id_categoria"
+                id="id_categoria"
+                labelKey="categoria_item"
+                valueKey="id"
+                options={data?.categorias || []}
+                value={filtros.categoria}
                 onChange={handleChange}
-                className="w-full"
               />
             </FormGroup>
 
-            <FormGroup id="telefone" label="TELEFONE">
-              <Input
-                type="text"
-                id="telefone"
-                name="telefone"
-                value={filtros.telefone}
+            <FormGroup id="status" label="STATUS">
+              <SelectAtualizado
+                name="status"
+                id="status"
+                labelKey="status"
+                valueKey="id"
+                options={[{ status: "Pendente" }, { status: "Concluido" }]}
+                value={filtros.status}
                 onChange={handleChange}
-                className="w-full"
-              />
-            </FormGroup>
-
-            <FormGroup id="celular" label="CELULAR">
-              <Input
-                type="text"
-                id="celular"
-                name="celular"
-                value={filtros.celular}
-                onChange={handleChange}
-                className="w-full"
               />
             </FormGroup>
           </div>

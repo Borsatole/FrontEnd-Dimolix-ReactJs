@@ -26,7 +26,7 @@ export function SwitchPadrao({
         relative rounded-full
         ring-0 focus:ring-0 group-focus:ring-0
         after:absolute after:rounded-full
-        after:${color}
+        after: bg-[var(--base-variant)]
         after:border-0
         after:transition-all
       `,

@@ -28,6 +28,9 @@ import { UseTabela } from "@src/components/comum/Tabelas/TabelaContext";
 import StatsFinanceiro from "./Stats";
 import { useRefresh } from "@src/context/RefreshContext";
 import { useLocation } from "react-router-dom";
+import { FiltroCadastros } from "./FiltroRegistro";
+import { Datas } from "@src/services/funcoes-globais";
+import { FiltroUniversal } from "./FiltroUniversal";
 
 type Config = {
   endpoint: string;
@@ -40,9 +43,9 @@ const config: Config = {
 };
 
 function Tabela() {
-  const { setRefresh } = useRefresh();
   const [loading, setLoading] = useState(true);
   const [aparecerSuave, setAparecerSuave] = useState(false);
+  const { primeiroDia, ultimoDia } = Datas();
 
   // Contexto que controla a tabela.tsx
   const {
@@ -196,7 +199,7 @@ function Tabela() {
     if (!relistar) return;
     Read({
       endpoint: `${config.endpoint}`,
-      queryFiltro: `tipo_movimentacao=entrada`,
+      queryFiltro: `tipo_movimentacao=entrada&${queryFiltro}`,
       pagina,
       limitePorPagina,
       setRegistros,
@@ -212,7 +215,7 @@ function Tabela() {
   useEffect(() => {
     Read({
       endpoint: `${config.endpoint}`,
-      queryFiltro: `tipo_movimentacao=entrada`,
+      queryFiltro: `tipo_movimentacao=entrada&${queryFiltro}`,
       pagina,
       limitePorPagina,
       setRegistros,
@@ -232,12 +235,6 @@ function Tabela() {
     }
   }, [registros]);
 
-  // useEffect(() => {
-  //   const refreshTabela = () => setRelistar(true);
-  //   setRefresh(refreshTabela);
-  //   return () => setRefresh(undefined);
-  // }, []);
-
   return (
     <>
       <Novoregistrobtn
@@ -245,8 +242,36 @@ function Tabela() {
         onClick={() => setAbrirModalNovoRegistro(true)}
       />
       <StatsFinanceiro />
-      {/* <FiltroCadastros onFiltrar={setQueryFiltro} /> */}
       {/* <MostrarNumeroDeResultados totalResultados={totalResultados} /> */}
+
+      <FiltroUniversal
+        onFiltrar={setQueryFiltro}
+        expandir={false}
+        campos={[
+          {
+            name: "descricao",
+            label: "DESCRIÇÃO",
+            type: "text",
+          },
+
+          {
+            name: "id_categoria",
+            label: "CATEGORIA",
+            type: "select",
+            options: data?.categorias || [],
+            labelKey: "categoria_item",
+            valueKey: "id",
+          },
+          {
+            name: "status",
+            label: "STATUS",
+            type: "select",
+            options: [{ status: "Pendente" }, { status: "Concluido" }],
+            labelKey: "status",
+            valueKey: "status",
+          },
+        ]}
+      />
 
       {/* Tabela dinâmica */}
       <SoftRender show={aparecerSuave}>

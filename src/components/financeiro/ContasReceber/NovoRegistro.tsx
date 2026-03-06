@@ -8,7 +8,6 @@ import { Input } from "@src/components/comum/input";
 import ErrorMessage from "@src/components/comum/Tabelas/ErrorMessage";
 import { UseTabela } from "@src/components/comum/Tabelas/TabelaContext";
 import { SelectAtualizado } from "@src/components/comum/SelectAtualizado";
-import { Alert, Checkbox, ToggleSwitch } from "flowbite-react";
 import { SwitchPadrao } from "@src/components/comum/SwitchPadrao";
 import dayjs from "dayjs";
 
