@@ -64,7 +64,7 @@ export default function ModalAdicionarRegistro() {
     status,
   };
 
-  const { loading, handleSubmit, fecharModal } = useCrudRegistro({
+  const { loadingcrud, handleSubmit, fecharModal } = useCrudRegistro({
     modo: "create",
     endpoint: config.endpoint,
     definicoes: config.definicoes,
@@ -168,7 +168,7 @@ export default function ModalAdicionarRegistro() {
           </FormGroup>
         </div>
 
-        <Footermodal loading={loading} />
+        <Footermodal loading={loadingcrud} />
       </form>
     </Modal>
   );

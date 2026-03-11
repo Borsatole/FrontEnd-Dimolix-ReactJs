@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Create, Update } from "@src/services/crud2";
 import { UseTabela } from "@src/components/comum/Tabelas/TabelaContext";
+import { useBuscarDados } from "./UseBuscarDadosTabela";
 
 export type Options = {
   icone?: string;
@@ -13,16 +14,16 @@ export type Options = {
 };
 
 export function useCrudRegistro({ endpoint, modo, definicoes }: Options) {
+  const { refresh } = UseTabela();
+  const [loadingcrud, setLoadingCrud] = useState(false);
   const {
     selectedRegistro,
     setSelectedRegistro,
-    setRelistar,
-    setLoadingSpiner,
+    setLoading,
     setAbrirModalNovoRegistro,
     setAbrirModalEditarRegistro,
   } = UseTabela();
 
-  const [loading, setLoading] = useState(false);
   const endpointModificado =
     modo === "update" && selectedRegistro
       ? `${endpoint}/${selectedRegistro.id}`
@@ -39,19 +40,19 @@ export function useCrudRegistro({ endpoint, modo, definicoes }: Options) {
         endpoint: endpointModificado,
         antesDeExecutar: () => {
           setLoading(true);
-          setLoadingSpiner(true);
+          setLoading(true);
         },
         depoisDeExecutar: () => {
-          setLoadingSpiner(false);
+          setLoading(false);
           setLoading(false);
 
-          if (definicoes?.relistar) setRelistar(true);
+          if (definicoes?.relistar) refresh();
           if (definicoes?.fecharModal) fecharModal();
         },
       });
     } catch {
       setLoading(false);
-      setLoadingSpiner(false);
+      setLoading(false);
     }
   };
 
@@ -62,7 +63,7 @@ export function useCrudRegistro({ endpoint, modo, definicoes }: Options) {
   };
 
   return {
-    loading,
+    loadingcrud,
     handleSubmit,
     fecharModal,
   };

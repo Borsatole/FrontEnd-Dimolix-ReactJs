@@ -1,45 +1,26 @@
 import { useState } from "react";
-import { montarQuery } from "@src/utils/montarQuery";
 
-export function useFiltros<T extends Record<string, any>>(
-  filtrosIniciais: T,
-  onFiltrar: (query: string) => void,
-) {
-  const [filtros, setFiltros] = useState<T>(filtrosIniciais);
+type Filtros = Record<string, any>;
 
-  function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) {
-    const { name, value } = e.target;
+export function useFiltro(filtrosIniciais: Filtros = {}) {
 
-    setFiltros((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  }
+  const [filtros, setFiltros] = useState<Filtros>(filtrosIniciais);
 
-  function aplicarFiltros() {
-    const query = montarQuery(filtros);
-    onFiltrar(query);
-  }
+  function gerarQueryString() {
+    const params = new URLSearchParams();
 
-  function limparFiltros() {
-    setFiltros(filtrosIniciais);
-    onFiltrar("");
-  }
+    Object.entries(filtros).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        params.append(key, String(value));
+      }
+    });
 
-  function filtrosAtivos() {
-    return Object.values(filtros).filter(
-      (v) => v !== undefined && v !== null && v.toString().trim() !== "",
-    ).length;
+    return params.toString();
   }
 
   return {
     filtros,
     setFiltros,
-    handleChange,
-    aplicarFiltros,
-    limparFiltros,
-    filtrosAtivos: filtrosAtivos(),
+    queryString: gerarQueryString(),
   };
 }

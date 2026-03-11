@@ -35,6 +35,7 @@ const FinanceiroContasFixas = lazy(() => import("./financeiro/ContasFixas"));
 const FinanceiroContasReceber = lazy(
   () => import("./financeiro/ContasReceber"),
 );
+const FinanceiroContasPagar = lazy(() => import("./financeiro/ContasPagar"));
 
 const routes = [
   { path: "/", element: <Home />, protected: true },
@@ -62,7 +63,7 @@ const routes = [
   },
   {
     path: "/financeiro/pagar",
-    element: <FinanceiroContasReceber />,
+    element: <FinanceiroContasPagar />,
     protected: true,
   },
 ];

@@ -11,7 +11,6 @@ import TabelaDinamica from "@src/components/comum/TabelaDinamica";
 import ModalEditarRegistro from "./EditarRegistro";
 import ModalAdicionarRegistro from "./NovoRegistro";
 
-import { usePaginacao } from "@src/hooks/UsePaginacao";
 import { SoftRender } from "@src/components/comum/SoftRender";
 import Novoregistrobtn from "@src/components/comum/Tabelas/Novoregistrobtn";
 import { UseTabela } from "@src/components/comum/Tabelas/TabelaContext";
@@ -36,7 +35,7 @@ const config: Config = {
 
 function Tabela() {
   const { filtros, setFiltros, queryString } = useFiltro({
-    tipo_movimentacao: "Entrada",
+    tipo_movimentacao: "saida",
     data_minima: dayjs().startOf("month").format("YYYY-MM-DD"),
     data_maxima: dayjs().endOf("month").format("YYYY-MM-DD"),
   });

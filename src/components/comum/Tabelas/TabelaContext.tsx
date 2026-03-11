@@ -19,14 +19,17 @@ interface TabelaContextType {
   registros: any[];
   setRegistros: Dispatch<SetStateAction<any[]>>;
 
+  paginacao: any;
+  setPaginacao: Dispatch<SetStateAction<any>>;
+
   data: BaseTabelaResponse | null;
   setData: Dispatch<SetStateAction<BaseTabelaResponse | null>>;
 
-  relistar: boolean;
-  setRelistar: Dispatch<SetStateAction<boolean>>;
+  refresh: () => void;
+  setRefresh: Dispatch<SetStateAction<() => void>>;
 
-  loadingSpiner: boolean;
-  setLoadingSpiner: Dispatch<SetStateAction<boolean>>;
+  loading: boolean;
+  setLoading: Dispatch<SetStateAction<boolean>>;
 
   selectedRegistro: any | null;
   setSelectedRegistro: Dispatch<SetStateAction<any | null>>;
@@ -44,12 +47,11 @@ interface TabelaContextType {
 const TabelaContext = createContext<TabelaContextType | undefined>(undefined);
 
 export function TabelaProvider({ children }: { children: ReactNode }) {
-  const { setRefresh } = useRefresh();
-  const location = useLocation();
+  const [refresh, setRefresh] = useState<() => void>(() => () => {});
+  const [paginacao, setPaginacao] = useState({});
   const [registros, setRegistros] = useState<any[]>([]);
   const [data, setData] = useState<BaseTabelaResponse | null>(null);
-  const [relistar, setRelistar] = useState(false);
-  const [loadingSpiner, setLoadingSpiner] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [selectedRegistro, setSelectedRegistro] = useState<any | null>(null);
   const [abrirModalNovoRegistro, setAbrirModalNovoRegistro] = useState(false);
   const [abrirModalEditarRegistro, setAbrirModalEditarRegistro] =
@@ -57,23 +59,19 @@ export function TabelaProvider({ children }: { children: ReactNode }) {
   const [abrirModalDetalhesRegistro, setAbrirModalDetalhesRegistro] =
     useState(false);
 
-  useEffect(() => {
-    const refreshTabela = () => setRelistar(true);
-    setRefresh(refreshTabela);
-    return () => setRefresh(undefined);
-  }, [location.pathname]);
-
   return (
     <TabelaContext.Provider
       value={{
         registros,
         setRegistros,
+        paginacao,
+        setPaginacao,
         data,
         setData,
-        relistar,
-        setRelistar,
-        loadingSpiner,
-        setLoadingSpiner,
+        refresh,
+        setRefresh,
+        loading,
+        setLoading,
         selectedRegistro,
         setSelectedRegistro,
         abrirModalNovoRegistro,

@@ -41,7 +41,7 @@ export default function ModalEditarRegistro() {
     dayjs().format("YYYY-MM-DD"),
   );
   const [valor, setValor] = useState<number>(0);
-  const [tipo_movimentacao, setTipo_movimentacao] = useState<string>("entrada");
+  const [tipo_movimentacao, setTipo_movimentacao] = useState<string>("saida");
   const [forma_pagamento, setForma_Pagamento] = useState<string>("");
   const [dia_vencimento, setDia_Vencimento] = useState<number | null>(1);
   const [observacoes, setObservacoes] = useState<string>("");

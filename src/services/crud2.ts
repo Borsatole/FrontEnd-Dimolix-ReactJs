@@ -16,12 +16,13 @@ interface Read {
   limitePorPagina?: number;
 
   setRegistros: React.Dispatch<React.SetStateAction<any[]>>;
-  setData?: React.Dispatch<React.SetStateAction<any[]>>;
+  setData?: React.Dispatch<React.SetStateAction<any | null>>;
   setTotalResultados?: React.Dispatch<React.SetStateAction<number>>;
   setTotalPaginas?: React.Dispatch<React.SetStateAction<number>>;
   setLoadingSpiner?: React.Dispatch<React.SetStateAction<boolean>>;
   setRelistar?: React.Dispatch<React.SetStateAction<boolean>>;
   setLoading?: React.Dispatch<React.SetStateAction<boolean>>;
+  setPaginacao?: React.Dispatch<React.SetStateAction<any>>
 }
 
 export async function Read({
@@ -36,6 +37,7 @@ export async function Read({
   setLoadingSpiner,
   setRelistar,
   setLoading,
+  setPaginacao,
 }: Read) {
 
 
@@ -47,9 +49,9 @@ export async function Read({
   )
     .then((response) => {
       if (response?.data?.success) {
-        // console.log("Read response data:", response.data);
         setRegistros(response.data.registros);
         setData?.(response.data);
+        setPaginacao?.(response.data.paginacao ?? {});
 
         if(response.data.paginacao){
           setTotalResultados?.(response.data.paginacao.total);

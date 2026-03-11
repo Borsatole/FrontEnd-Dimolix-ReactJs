@@ -4,7 +4,7 @@ interface UsePaginacaoOptions {
   limiteInicial?: number;
 }
 
-export function usePaginacao({ limiteInicial = 20 }: UsePaginacaoOptions = {}) {
+export function usePaginacao({ limiteInicial = 7 }: UsePaginacaoOptions = {}) {
   const [pagina, setPagina] = useState(1);
   const [queryFiltro, setQueryFiltro] = useState("");
   const [limitePorPagina, setLimitePorPagina] = useState(limiteInicial);
@@ -15,7 +15,6 @@ export function usePaginacao({ limiteInicial = 20 }: UsePaginacaoOptions = {}) {
 
 
   return {
-    // estados
     pagina,
     limitePorPagina,
     totalPaginas,

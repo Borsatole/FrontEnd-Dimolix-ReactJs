@@ -30,11 +30,8 @@ import TabelaDinamica, {
 import ModalEditarRegistro from "@src/components/clientes/EditarRegistro";
 import ModalAdicionarRegistro from "./NovoRegistro";
 
-import { FiltroCadastros } from "./FiltroRegistro";
 import { Delete, Read } from "@src/services/crud2";
-import { useClientes } from "@src/context/ClientesContext";
 import { usePaginacao } from "@src/hooks/UsePaginacao";
-import { useFetch } from "@src/hooks/useFetch";
 import { useFinanceiro } from "@src/context/FinanceiroContext";
 
 function Tabela() {

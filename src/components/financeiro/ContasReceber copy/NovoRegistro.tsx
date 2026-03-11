@@ -1,38 +1,28 @@
-import { useEffect, useState } from "react";
 import Modal from "@components/modal/Modal";
 import Headermodal from "@src/components/comum/Tabelas/Headermodal";
 import Footermodal from "@src/components/comum/Tabelas/Footermodal";
-import { UseTabela } from "@src/components/comum/Tabelas/TabelaContext";
 import { Options, useCrudRegistro } from "@src/hooks/useCrudRegistro";
+import { useEffect, useState } from "react";
 import { FormGroup } from "@src/components/comum/FormGroup";
 import { Input } from "@src/components/comum/input";
-import { SelectModificado } from "@src/components/comum/select";
 import ErrorMessage from "@src/components/comum/Tabelas/ErrorMessage";
-import { BtnSelectMes } from "./NovoRegistro";
+import { UseTabela } from "@src/components/comum/Tabelas/TabelaContext";
 import { SelectAtualizado } from "@src/components/comum/SelectAtualizado";
-import { Alert } from "flowbite-react";
-import dayjs from "dayjs";
 import { SwitchPadrao } from "@src/components/comum/SwitchPadrao";
+import dayjs from "dayjs";
 
 const config: Options = {
+  modo: "create",
   endpoint: "/financeiro",
-  modo: "update",
-  icone: "contasfixas",
+  icone: "financeiro",
   definicoes: {
     relistar: true,
-    fecharModal: true,
+    fecharModal: false,
   },
 };
 
-export default function ModalEditarRegistro() {
-  const {
-    data,
-    registros,
-    setRegistros,
-    setLoading,
-    selectedRegistro,
-    setSelectedRegistro,
-  } = UseTabela();
+export default function ModalAdicionarRegistro() {
+  const { data } = UseTabela();
 
   /* Campos Controlados */
   const [descricao, setDescricao] = useState<string>("");
@@ -62,27 +52,6 @@ export default function ModalEditarRegistro() {
     return null;
   }
 
-  const { loadingcrud, handleSubmit, fecharModal } = useCrudRegistro({
-    modo: config.modo,
-    endpoint: config.endpoint,
-    definicoes: config.definicoes,
-  });
-
-  const registro = registros.find((p) => p.id === selectedRegistro?.id);
-
-  useEffect(() => {
-    if (registro) {
-      setDescricao(registro.descricao);
-      setValor(registro.valor);
-      setId_categoria(registro.id_categoria);
-      setData_movimentacao(registro.data_movimentacao);
-      setForma_Pagamento(registro.forma_pagamento);
-      setDia_Vencimento(registro.dia_vencimento);
-      setObservacoes(registro.observacoes);
-      setStatus(registro.status);
-    }
-  }, [selectedRegistro?.id]);
-
   const formData = {
     descricao,
     valor,
@@ -94,6 +63,12 @@ export default function ModalEditarRegistro() {
     observacoes,
     status,
   };
+
+  const { loading, handleSubmit, fecharModal } = useCrudRegistro({
+    modo: "create",
+    endpoint: config.endpoint,
+    definicoes: config.definicoes,
+  });
 
   return (
     <Modal IsOpen={true} onClose={fecharModal} className="min-h-auto">
@@ -109,15 +84,14 @@ export default function ModalEditarRegistro() {
 
           handleSubmit(e, formData);
         }}
-        className="flex flex-col gap-2"
+        className="flex flex-col"
       >
         <Headermodal
           icone={config.icone}
-          titulo="Editar Registro"
-          subtitulo="Edite o registro"
+          titulo="Novo Registro"
+          subtitulo="Crie um novo registro"
         />
         {erro && <ErrorMessage message={erro} />}
-
         <div className="bg-[var(--base-variant)] p-4">
           <FormGroup label="Descricao" id="descricao">
             <Input
@@ -174,7 +148,7 @@ export default function ModalEditarRegistro() {
           <FormGroup label="Status da conta" id="status">
             <div
               className={`
-                      flex items-center justify-between p-3 rounded-lg border-3 border-[var(--base-color)] bg-[var(--base-variant)]`}
+              flex items-center justify-between p-3 rounded-lg border-3 border-[var(--base-color)] bg-[var(--base-variant)]`}
             >
               <span
                 className={`text-sm font-medium ${
@@ -193,8 +167,39 @@ export default function ModalEditarRegistro() {
             </div>
           </FormGroup>
         </div>
-        <Footermodal loading={loadingcrud} />
+
+        <Footermodal loading={loading} />
       </form>
     </Modal>
+  );
+}
+
+interface BtnSelectMesProps {
+  texto: string;
+  value: number;
+  recorrenciaAtual?: number;
+  onClick: () => void;
+}
+
+export function BtnSelectMes({
+  texto,
+  value,
+  recorrenciaAtual,
+  onClick,
+}: BtnSelectMesProps) {
+  const selecionado = Number(recorrenciaAtual) === Number(value);
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`cursor-pointer ${
+        selecionado
+          ? "bg-[var(--corPrincipal)] text-white border-[var(--corPrincipal)]"
+          : "bg-[var(--base-variant)] border-[var(--base-color)]"
+      } p-2 text-sm border-2 rounded-2xl`}
+    >
+      {texto}
+    </button>
   );
 }

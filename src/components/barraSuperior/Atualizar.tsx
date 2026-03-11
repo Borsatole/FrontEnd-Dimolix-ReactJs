@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { GrRefresh } from "react-icons/gr";
-import LoadingSpiner from "@src/components/loader/LoadingSpiner";
-import { useRefresh } from "@src/context/RefreshContext";
 import { UseTabela } from "@src/components/comum/Tabelas/TabelaContext";
 
 function AtualizarButton() {
-  const { refresh } = useRefresh();
+  const { refresh } = UseTabela();
   const [loading, setLoading] = useState(false);
 
   function atualizar() {
