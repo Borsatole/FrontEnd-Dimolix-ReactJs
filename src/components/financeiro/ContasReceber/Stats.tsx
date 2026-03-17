@@ -1,5 +1,6 @@
 import CardOrders from "@src/components/comum/CardStats";
 import { UseTabela } from "@src/components/comum/Tabelas/TabelaContext";
+import { formatarDinheiro } from "@src/utils/dinheiro";
 
 import { HiTrendingUp, HiTrendingDown, HiCash } from "react-icons/hi";
 
@@ -8,18 +9,12 @@ export default function StatsFinanceiro() {
 
   const stats = data?.totalPorPeriodo || {};
 
-  const formatar = (valor: number) =>
-    Number(valor || 0).toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    });
-
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3 mb-6">
       <CardOrders
         titulo="Entradas"
         textoRodape="Soma de Entradas "
-        valor={formatar(stats.Entradas)}
+        valor={formatarDinheiro(stats.Entradas)}
         cor="#10b981"
         corRodape="#059669"
         corRodapeHover="#047857"

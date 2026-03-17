@@ -186,13 +186,17 @@ export function Delete<T extends BaseRegistro>({
         if (registros && setRegistros && registro?.id) {
           setRegistros(registros.filter((r) => r.id !== registro.id));
         }
-
         depoisDeExecutar?.();
-      }
+        return;
+      } 
+      
+      Alerta("toast", "error", `${response?.data?.message}`);
 
     } catch (error) {
       Alerta("toast", "error", "Não foi possível deletar o registro.");
     }
+    depoisDeExecutar?.();
+    
   };
 
   Confirm({

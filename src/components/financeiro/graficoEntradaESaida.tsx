@@ -1,12 +1,25 @@
 import { BarChart, HighlightScope } from "@mui/x-charts";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { UseTabela } from "../comum/Tabelas/TabelaContext";
+type dados = {
+  mes: string;
+  entrada: number;
+  saida: number;
+};
 
 function GraficoEntradaESaida() {
-  const dados = [
-    { mes: "Janeiro", entrada: 24350, saida: 16000 },
-    { mes: "Fevereiro", entrada: 35000, saida: 25000 },
-    { mes: "Março", entrada: 5800, saida: 600 },
-  ];
+  const [dados, setDados] = useState<dados[]>([]);
+
+  const [periodo, setPeriodo] = useState(6);
+
+  const { data } = UseTabela();
+
+  useEffect(() => {
+    if (data?.totalAnoSelecionado) {
+      setDados(data.totalAnoSelecionado);
+    }
+  }, [data]);
+
   const xLabels = dados.map((item) => item.mes);
   const entradaData = dados.map((item) => item.entrada);
   const saidaData = dados.map((item) => item.saida);
@@ -17,33 +30,35 @@ function GraficoEntradaESaida() {
   ];
 
   return (
-    <BarChart
-      height={300}
-      colors={["green", "red"]}
-      series={series}
-      skipAnimation={false}
-      xAxis={[
-        {
-          scaleType: "band",
-          data: xLabels,
-          labelStyle: { fill: "var(--text-color)" },
-          tickLabelStyle: { fill: "var(--text-color)" },
-        },
-      ]}
-      yAxis={[
-        {
-          position: "none",
-          labelStyle: { fill: "var(--text-color)" },
-          tickLabelStyle: { fill: "var(--text-color)" },
-        },
-      ]}
-      sx={{
-        "& .MuiChartsLegend-root": {
-          color: "var(--text-color)",
-          fontWeight: 600,
-        },
-      }}
-    />
+    <>
+      <BarChart
+        height={300}
+        colors={["green", "red"]}
+        series={series}
+        skipAnimation={false}
+        xAxis={[
+          {
+            scaleType: "band",
+            data: xLabels,
+            labelStyle: { fill: "var(--text-color)" },
+            tickLabelStyle: { fill: "var(--text-color)" },
+          },
+        ]}
+        yAxis={[
+          {
+            position: "none",
+            labelStyle: { fill: "var(--text-color)" },
+            tickLabelStyle: { fill: "var(--text-color)" },
+          },
+        ]}
+        sx={{
+          "& .MuiChartsLegend-root": {
+            color: "var(--text-color)",
+            fontWeight: 600,
+          },
+        }}
+      />
+    </>
   );
 }
 

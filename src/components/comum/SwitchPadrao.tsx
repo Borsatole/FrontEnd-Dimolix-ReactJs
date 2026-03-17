@@ -31,7 +31,7 @@ export function SwitchPadrao({
         after:transition-all
       `,
       checked: {
-        on: "after:translate-x-full bg-[var(--base-color)]",
+        on: `after:translate-x-full bg-[var(--corPrincipal)]`,
         off: "after:translate-x-0 bg-[var(--base-color)]",
       },
       sizes: {

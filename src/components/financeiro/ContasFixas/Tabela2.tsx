@@ -25,12 +25,9 @@ import { usePaginacao } from "@src/hooks/UsePaginacao";
 import { SoftRender } from "@src/components/comum/SoftRender";
 import Novoregistrobtn from "@src/components/comum/Tabelas/Novoregistrobtn";
 import { UseTabela } from "@src/components/comum/Tabelas/TabelaContext";
-import StatsFinanceiro from "./Stats";
-import { Datas } from "@src/services/funcoes-globais";
-import { FiltroUniversal } from "@src/components/comum/FiltroUniversal";
-import { useFiltro } from "@src/hooks/useFiltros";
-import dayjs from "dayjs";
-import { useBuscarDados } from "@src/hooks/UseBuscarDados";
+import { HiOutlineRefresh } from "react-icons/hi";
+import { useLocation } from "react-router-dom";
+import { useRefresh } from "@src/context/RefreshContext";
 
 type Config = {
   endpoint: string;
@@ -38,18 +35,14 @@ type Config = {
 };
 
 const config: Config = {
-  endpoint: "/financeiro",
+  endpoint: "/financeiro-contas-fixas",
   icone: "contasfixas",
 };
 
 function Tabela() {
+  const { setRefresh } = useRefresh();
   const [loading, setLoading] = useState(true);
   const [aparecerSuave, setAparecerSuave] = useState(false);
-  const { primeiroDia, ultimoDia } = Datas();
-
-  const { filtros, setFiltros, queryString } = useFiltro({
-    tipo_movimentacao: "Entrada",
-  });
 
   // Contexto que controla a tabela.tsx
   const {
@@ -73,6 +66,8 @@ function Tabela() {
   const {
     pagina,
     setPagina,
+    queryFiltro,
+    setQueryFiltro,
     limitePorPagina,
     setLimitePorPagina,
     totalPaginas,
@@ -94,10 +89,15 @@ function Tabela() {
       render: (registro) => registro.descricao ?? "-",
     },
     {
-      key: "categoria",
-      label: "CATEGORIA",
+      key: "valor",
+      label: "VALOR",
+      render: (registro) => registro.valor || "-",
+    },
+    {
+      key: "recorrencia",
+      label: "RECORRENCIA",
       render: (registro) => {
-        const categoria = registro.categoria;
+        const recorrencia = registro.recorrencia;
 
         return (
           <div className="flex justify-center">
@@ -113,53 +113,14 @@ function Tabela() {
                       uppercase tracking-wide 
                       shadow-md"
             >
-              <span>{categoria}</span>
+              <HiOutlineRefresh className="text-sm" />
+              <span>
+                {recorrencia} {Number(recorrencia) === 1 ? "mês" : "meses"}
+              </span>
             </div>
           </div>
         );
       },
-    },
-    {
-      key: "valor",
-      label: "VALOR",
-      render: (registro) => registro.valor || "-",
-    },
-    {
-      key: "status",
-      label: "STATUS",
-      render: (registro) => {
-        const status = registro.status || "";
-
-        return (
-          <div className="flex justify-center">
-            <div
-              className={`
-                flex items-center gap-2 
-                      
-                ${
-                  status.toLowerCase() === "concluido"
-                    ? "bg-green-600 text-white"
-                    : "bg-gradient-to-r from-[var(--corPrincipal)]/30 to-[var(--corPrincipal)]/20"
-                }
-                      
-                      rounded-full 
-                      px-4 py-1.5 
-                      text-xs font-semibold 
-                      uppercase tracking-wide 
-                      shadow-md
-                `}
-            >
-              <span>{status}</span>
-            </div>
-          </div>
-        );
-      },
-    },
-    {
-      key: "data_movimentacao",
-      label: "DATA",
-      render: (registro) =>
-        dayjs(registro.data_movimentacao).format("DD/MM/YYYY") ?? "-",
     },
   ];
 
@@ -206,7 +167,7 @@ function Tabela() {
     if (!relistar) return;
     Read({
       endpoint: `${config.endpoint}`,
-      queryFiltro: queryString,
+      queryFiltro,
       pagina,
       limitePorPagina,
       setRegistros,
@@ -222,7 +183,7 @@ function Tabela() {
   useEffect(() => {
     Read({
       endpoint: `${config.endpoint}`,
-      queryFiltro: queryString,
+      queryFiltro,
       pagina,
       limitePorPagina,
       setRegistros,
@@ -233,7 +194,7 @@ function Tabela() {
       setRelistar,
       setLoading,
     });
-  }, [pagina, limitePorPagina, queryString]);
+  }, [pagina, limitePorPagina, queryFiltro]);
 
   useEffect(() => {
     if (registros.length >= 0) {
@@ -242,55 +203,20 @@ function Tabela() {
     }
   }, [registros]);
 
+  // useEffect(() => {
+  //   const refreshTabela = () => setRelistar(true);
+  //   setRefresh(refreshTabela);
+  //   return () => setRefresh(undefined);
+  // }, []);
+
   return (
     <>
       <Novoregistrobtn
         icone={config.icone}
         onClick={() => setAbrirModalNovoRegistro(true)}
       />
-      <StatsFinanceiro />
-      {/* <MostrarNumeroDeResultados totalResultados={totalResultados} /> */}
-
-      <FiltroUniversal
-        filtros={filtros}
-        setFiltros={setFiltros}
-        expandir={false}
-        campos={[
-          {
-            name: "data_minima",
-            label: "DATA INICIO",
-            type: "date",
-            defaultValue: primeiroDia,
-          },
-          {
-            name: "data_maxima",
-            label: "DATA FIM",
-            type: "date",
-            defaultValue: ultimoDia,
-          },
-          {
-            name: "descricao",
-            label: "DESCRIÇÃO",
-            type: "text",
-          },
-          {
-            name: "id_categoria",
-            label: "CATEGORIA",
-            type: "select",
-            options: data?.categorias || [],
-            labelKey: "categoria_item",
-            valueKey: "id",
-          },
-          {
-            name: "status",
-            label: "STATUS",
-            type: "select",
-            options: [{ status: "Pendente" }, { status: "Concluido" }],
-            labelKey: "status",
-            valueKey: "status",
-          },
-        ]}
-      />
+      {/* <FiltroCadastros onFiltrar={setQueryFiltro} /> */}
+      <MostrarNumeroDeResultados totalResultados={totalResultados} />
 
       {/* Tabela dinâmica */}
       <SoftRender show={aparecerSuave}>

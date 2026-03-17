@@ -28,8 +28,6 @@ export default function ModalEditarRegistro() {
     data,
     registros,
     setRegistros,
-    setRelistar,
-    setLoadingSpiner,
     selectedRegistro,
     setSelectedRegistro,
   } = UseTabela();
@@ -60,7 +58,7 @@ export default function ModalEditarRegistro() {
     return null;
   }
 
-  const { loading, handleSubmit, fecharModal } = useCrudRegistro({
+  const { loadingcrud, handleSubmit, fecharModal } = useCrudRegistro({
     modo: config.modo,
     endpoint: config.endpoint,
     definicoes: config.definicoes,
@@ -233,7 +231,7 @@ export default function ModalEditarRegistro() {
             />
           </FormGroup>
         </div>
-        <Footermodal loading={loading} />
+        <Footermodal loading={loadingcrud} />
       </form>
     </Modal>
   );
