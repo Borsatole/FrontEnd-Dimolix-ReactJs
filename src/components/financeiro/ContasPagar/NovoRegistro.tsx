@@ -17,7 +17,7 @@ const config: Options = {
   icone: "financeiro",
   definicoes: {
     relistar: true,
-    fecharModal: false,
+    fecharModal: true,
   },
 };
 

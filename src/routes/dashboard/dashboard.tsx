@@ -12,8 +12,8 @@ export default function Dashboard() {
   return (
     <>
       <ContainerSecundario>
-        <BannerBoasVindas />
         <TituloPagina>Dashboard</TituloPagina>
+        <BannerBoasVindas />
         <GridDeCards>
           <CardOpcoes
             icone="demandas"
@@ -21,11 +21,12 @@ export default function Dashboard() {
             titulo="Demandas"
             rota="/demandas"
           />
+
           <CardOpcoes
-            icone="ordemdeservico"
-            descricao="Demandas Diarias como entregas e retiradas de equipamentos."
-            titulo="Ordem de Serviço"
-            rota="/"
+            icone="estoque"
+            descricao="Gerencie suas locações de forma visual."
+            titulo="Locações"
+            rota="/estoque"
           />
 
           <CardOpcoes
@@ -36,25 +37,18 @@ export default function Dashboard() {
           />
 
           <CardOpcoes
-            icone="orcamento"
+            icone="financeiro"
             descricao="Gerencie o cadastro de clientes da sua empresa"
-            titulo="Orçamentos"
-            rota="/"
+            titulo="Financeiro"
+            rota="/financeiro"
           />
 
-          <CardOpcoes
-            icone="estoque"
-            descricao="Gerencie suas caçambas em estoque."
-            titulo="Estoque"
-            rota="/estoque"
-          />
-
-          <CardOpcoes
+          {/* <CardOpcoes
             icone="rotasetaxas"
             descricao="Gerencie taxas de entregas e ruas especiais."
             titulo="Rotas e Taxas"
             rota="/"
-          />
+          /> */}
         </GridDeCards>
       </ContainerSecundario>
     </>
@@ -65,10 +59,11 @@ function GridDeCards({ children }: any) {
   return (
     <div
       className="
+        mt-6
         grid 
         grid-cols-1 
         sm:grid-cols-2 
-        lg:grid-cols-3
+        lg:grid-cols-2
         gap-4
         sm:gap-6
       "
@@ -78,61 +73,85 @@ function GridDeCards({ children }: any) {
   );
 }
 
-function BannerBoasVindas() {
+export function BannerBoasVindas() {
+  const [tamanhoTela, setTamanhoTela] = useState(window.innerWidth);
+  const [numeroDeFlutuantes, setNumeroDeFlutuantes] = useState(15);
+
+  // 🔥 Partículas proporcionais
+  useEffect(() => {
+    const minWidth = 320;
+    const maxWidth = 1920;
+
+    const minParticles = 5;
+    const maxParticles = 18;
+
+    const largura = Math.min(Math.max(tamanhoTela, minWidth), maxWidth);
+
+    const proporcao = (largura - minWidth) / (maxWidth - minWidth);
+
+    const quantidade = Math.round(
+      minParticles + proporcao * (maxParticles - minParticles),
+    );
+
+    setNumeroDeFlutuantes(quantidade);
+  }, [tamanhoTela]);
+
+  // 🔥 Resize listener
+  useEffect(() => {
+    const handleResize = () => setTamanhoTela(window.innerWidth);
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
-    <div className="relative w-full overflow-hidden sm:p-8 mb-6 mx-auto shadow-lg rounded-2xl border border-[var(--corPrincipal)] hover:shadow-2xl transition-shadow duration-300 cursor-pointer bg-gradient-to-br from-[var(--corPrincipal)] to-[var(--corPrincipal)]/80">
-      {/* Animação de logos flutuantes */}
+    <div className="h-full relative w-full rounded-2xl border border-[var(--base-color)] bg-[#0f0f0f] shadow-md overflow-hidden">
+      {/* Flutuantes */}
       <div className="absolute inset-0 overflow-hidden">
-        {[...Array(15)].map((_, i) => (
+        {[...Array(numeroDeFlutuantes)].map((_, i) => (
           <div
             key={i}
-            className="absolute animate-float opacity-40 invert-50"
+            className="absolute backdrop-blur-sm animate-ping bg-[var(--corPrincipal)]/20"
             style={{
-              left: `${(i * 15) % 100}%`,
-              top: `${(i * 20) % 100}%`,
-              animationDelay: `${i * 0.8}s`,
-              animationDuration: `${8 + (i % 4) * 2}s`,
+              width: `${40 + (i % 4) * 20}px`,
+              height: `${20 + (i % 3) * 15}px`,
+              borderRadius: "8px",
+              left: `${(i * 12) % 100}%`,
+              top: `${(i * 18) % 100}%`,
+              transform: `rotate(${i * 15}deg)`,
+              animationDelay: `${i * 0.7}s`,
+              animationDuration: `${8 + (i % 3) * 2}s`,
             }}
-          >
-            <img
-              src="/logo.webp"
-              alt=""
-              className="w-16 h-16 sm:w-20 sm:h-20 object-contain"
-              style={{
-                filter: "brightness(0) invert(1)",
-              }}
-            />
-          </div>
+          />
         ))}
       </div>
-
-      {/* Overlay gradiente */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/10 to-transparent"></div>
+      {/* Glow leve */}
+      <div className="absolute inset-0 opacity-30 pointer-events-none">
+        <div className="absolute w-72 h-72 bg-yellow-400/20 blur-3xl -top-20 -left-20 rounded-full" />
+      </div>
 
       {/* Conteúdo */}
-      <div className="relative  p-6 sm:p-8 md:p-20 flex items-center gap-4 sm:gap-6 ">
-        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-black shadow-md flex items-center justify-center overflow-hidden flex-shrink-0">
-          <img
-            src="/logo.webp"
-            alt="Logo"
-            className="w-12 h-12 sm:w-14 sm:h-14 object-contain"
-          />
+      <div className="relative flex flex-wrap  items-center gap-5 p-6 sm:p-8">
+        {/* Logo */}
+        <div className="min-w-16 h-16 rounded-full bg-black border border-yellow-400/30 flex items-center justify-center">
+          <img src="/logo.webp" className="w-10 h-10" />
         </div>
 
-        <div className="text-left text-black">
-          <h2 className="text-xl sm:text-2xl font-bold drop-shadow-lg">
+        {/* Texto */}
+        <div>
+          <h2 className="text-xl text-left sm:text-2xl font-bold text-[var(--corPrincipal)]">
             Olá, Seja bem-vindo!
           </h2>
-          <p className="text-xs sm:text-sm mt-1 drop-shadow-md">
+          <p className="text-sm text-left text-white">
             Acompanhe as demandas do sistema de forma simples e rápida.
           </p>
         </div>
       </div>
 
+      {/* 🎬 Animação */}
       <style>{`
         @keyframes float {
-          0%,
-          100% {
+          0%, 100% {
             transform: translateY(0) translateX(0) rotate(0deg);
           }
           25% {

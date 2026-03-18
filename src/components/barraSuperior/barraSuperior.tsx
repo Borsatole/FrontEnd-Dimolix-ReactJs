@@ -13,7 +13,7 @@ function BarraSuperior() {
         <BtnAbrirMenuLateral />
       </div>
 
-      <div className="flex items-center gap-3 justify-center ">
+      <div className="flex items-center gap-3 justify-center scale-90 sm:scale-100">
         <Timer />
 
         <Tooltip tooltip="Alternar tela cheia" position="bottom">

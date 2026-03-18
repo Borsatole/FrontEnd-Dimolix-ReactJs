@@ -121,7 +121,7 @@ function Timer() {
   // Labels abaixo de cada par de dígitos
 
   return (
-    <div className="p-2 h-10 text-sm bg-[var(--base-variant)] cursor-pointer flex items-center justify-center gap-2 rounded-full text-[var(--text-color)]">
+    <div className=" p-2 h-10 text-sm bg-[var(--base-variant)] cursor-pointer flex items-center justify-center gap-2 rounded-full text-[var(--text-color)]">
       {/* Arco circular */}
       <svg
         width="22"
@@ -155,10 +155,10 @@ function Timer() {
       </svg>
 
       {/* Label */}
-      <span className="opacity-60 text-xs">Expira :</span>
+      <span className="hidden opacity-60 text-xs sm:block">Expira :</span>
 
       {/* Dígitos hh:mm:ss */}
-      <div className="flex items-center text-sm font-medium tracking-wider">
+      <div className=" flex items-center text-sm font-medium tracking-wider">
         {digits.map((d, i) => {
           if (d === ":") {
             return (

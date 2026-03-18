@@ -19,8 +19,8 @@ export function CardOpcoes({
 }: CardOpcoesProps) {
   const navigate = useNavigate();
   return (
-    <Card className="w-full max-w-sm bg-[var(--base-variant)] mx-auto shadow-lg rounded-2xl border border-[var(--base-color)] hover:shadow-2xl transition-shadow duration-300 cursor-pointer">
-      <div className="flex flex-col h-full min-h-[300px]">
+    <Card className="w-full bg-[var(--base-variant)] mx-auto shadow-lg rounded-2xl border border-[var(--base-color)] hover:shadow-2xl transition-shadow duration-300 cursor-pointer">
+      <div className="flex flex-col ">
         {/* Conteúdo que cresce */}
         <div className="flex-grow">
           {/* Ícone */}
@@ -34,11 +34,7 @@ export function CardOpcoes({
           <h5 className="mb-2 text-xl font-semibold text-center">{titulo}</h5>
 
           {/* Descrição */}
-          {descricao && (
-            <p className="mb-6 text-center text-sm">
-              {MaxCaracteres(descricao, 80)}
-            </p>
-          )}
+          {descricao && <p className="mb-6 text-center text-sm">{descricao}</p>}
         </div>
 
         {/* Botão sempre na base com largura total */}

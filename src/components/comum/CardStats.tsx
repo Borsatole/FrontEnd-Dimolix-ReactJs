@@ -73,7 +73,7 @@ export default function CardOrders({
 
         {/* textos */}
         <div className="z-10 flex flex-col gap-1">
-          <span className="text-2xl sm:text-3xl font-black text-white leading-none tracking-tight">
+          <span className="text-left text-2xl sm:text-3xl font-black text-white leading-none tracking-tight">
             {valor}
           </span>
           <span className="text-white/70 text-xs font-medium uppercase tracking-widest mt-1">

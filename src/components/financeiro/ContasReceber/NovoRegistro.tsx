@@ -17,7 +17,7 @@ const config: Options = {
   icone: "financeiro",
   definicoes: {
     relistar: true,
-    fecharModal: false,
+    fecharModal: true,
   },
 };
 
@@ -155,7 +155,7 @@ export default function ModalAdicionarRegistro() {
                   status === "concluido" ? "text-green-600" : "text-yellow-600"
                 }`}
               >
-                {status === "concluido" ? "Conta Paga" : "Conta pendente"}
+                {status === "concluido" ? "Conta Recebida" : "Conta pendente"}
               </span>
 
               <SwitchPadrao
